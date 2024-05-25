@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'register.dart';
+import 'home.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,6 +23,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+
+  void _handleGoogleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+      // Sucesso
+    } catch (error) {
+      print('Erro ao autenticar com o Google: $error');
+      // erro de autenticação
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: 'Username ou e-mail',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                     ),
                   ),
@@ -64,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: 'Palavra-passe',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -106,13 +119,16 @@ class _LoginPageState extends State<LoginPage> {
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: () {
-                      // LOGIN FAZER
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                     ),
                     child: Text('Login', style: TextStyle(color: Colors.white)),
@@ -122,9 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   width: commonWidth,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // login com Google FAZER
-                    },
+                    onPressed: _handleGoogleSignIn, // login com o Google AQUI
                     icon: Image.asset(
                       '../assets/images/gmail_icon.png',
                       width: 24,
@@ -147,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(6),
                         side: BorderSide(color: Colors.grey),
                       ),
                     ),
@@ -182,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(6),
                         side: BorderSide(color: Colors.grey),
                       ),
                     ),
@@ -191,7 +205,10 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 30),
                 TextButton(
                   onPressed: () {
-                    // Ir para a página de Registo FAZER
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
                   },
                   child: RichText(
                     text: TextSpan(
