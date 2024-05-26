@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginPage(),
+      debugShowCheckedModeBanner: false
     );
   }
 }
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Meducation',
                   style: TextStyle(
                     fontSize: 36,
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Container(
                   width: commonWidth,
                   child: TextField(
@@ -93,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 5),
                 Align(
                   alignment: Alignment.center,
                   child: TextButton(
@@ -101,20 +102,20 @@ class _LoginPageState extends State<LoginPage> {
                       // página de recuperação de password  FAZER
                     },
                     child: RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         text: 'Não te lembras da palavra-passe? ',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Colors.black, fontSize: 12.5),
                         children: <TextSpan>[
                           TextSpan(
                             text: 'Recupera aqui',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   width: commonWidth,
                   child: ElevatedButton(
@@ -126,26 +127,26 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Login', style: TextStyle(color: Colors.white)),
+                    child: const Text('Login', style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Container(
                   width: commonWidth,
                   child: ElevatedButton.icon(
                     onPressed: _handleGoogleSignIn, // login com o Google AQUI
                     icon: Image.asset(
-                      '../assets/images/gmail_icon.png',
+                      'assets/images/gmail_icon.png',
                       width: 24,
                       height: 24,
                     ),
                     label: RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         text: 'Continuar com o ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
@@ -159,15 +160,15 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
-                        side: BorderSide(color: Colors.grey),
+                        side: const BorderSide(color: Colors.grey),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Container(
                   width: commonWidth,
                   child: ElevatedButton.icon(
@@ -175,12 +176,12 @@ class _LoginPageState extends State<LoginPage> {
                       // Login com Outlook FAZER
                     },
                     icon: Image.asset(
-                      '../assets/images/outlook_icon.png',
+                      'assets/images/outlook_icon.png',
                       width: 24,
                       height: 24,
                     ),
                     label: RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         text: 'Continuar com o ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
@@ -194,15 +195,15 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
-                        side: BorderSide(color: Colors.grey),
+                        side: const BorderSide(color: Colors.grey),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -211,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                   child: RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       text: 'Não tens uma conta? ',
                       style: TextStyle(color: Colors.black),
                       children: <TextSpan>[
