@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "530573529949",
+    "project_id": "meducation-fa4f9",
+    "storage_bucket": "meducation-fa4f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:530573529949:android:981fcfebdb1763a5278eb4",
+        "android_client_info": {
+          "package_name": "com.example.teste"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "530573529949-oodlp0nsfi2da0snbejcktp2hif7qfui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAStmZekAfs8l15WZkgb8D9n1QPYdYqRyk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "530573529949-oodlp0nsfi2da0snbejcktp2hif7qfui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

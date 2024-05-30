@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'register.dart';
 import 'home.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -12,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginPage(),
-      debugShowCheckedModeBanner: false
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -26,13 +30,38 @@ class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
-  void _handleGoogleSignIn() async {
+  Future<User?> signInWithGoogle() async {
     try {
-      await _googleSignIn.signIn();
-      // Sucesso
-    } catch (error) {
-      print('Erro ao autenticar com o Google: $error');
-      // erro de autenticação
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        return null;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      return userCredential.user;
+    } catch (e) {
+      print('Erro ao autenticar com o Google: $e');
+      return null;
+    }
+  }
+
+  void _handleGoogleSignIn() async {
+    User? user = await signInWithGoogle();
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      print('Erro ao autenticar com o Google');
     }
   }
 
