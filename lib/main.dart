@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:teste/profile.dart';
 import 'register.dart';
 import 'home.dart';
 
@@ -10,8 +11,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: LoginPage(),
+    return const MaterialApp(
+      home: ProfilePage(),
       debugShowCheckedModeBanner: false
     );
   }
