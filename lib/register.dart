@@ -62,7 +62,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.deepPurple,
                         ),
                         onPressed: () {
@@ -86,7 +88,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          _confirmPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.deepPurple,
                         ),
                         onPressed: () {
@@ -108,14 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    onTap: () async {
-                      DateTime? date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                    },
+                    onTap: () async {},
                   ),
                 ),
                 SizedBox(height: 20),
@@ -126,17 +123,21 @@ class _RegisterPageState extends State<RegisterPage> {
                       String email = _emailController.text;
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => VerificationPage(email: email)),
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                VerificationPage(email: email)),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Verificar Conta', style: TextStyle(color: Colors.white)),
+                    child: Text('Verificar Conta',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],

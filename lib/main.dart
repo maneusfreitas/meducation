@@ -1,39 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:teste/profile.dart';
-import 'register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
+import 'register.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ProfilePage(),
-      debugShowCheckedModeBanner: false
+    return MaterialApp(
+      title: 'Meducation',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      home: const LoginPage(),
     );
   }
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
-  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
-  void _handleGoogleSignIn() async {
+  Future<User?> _handleGoogleSignIn() async {
     try {
-      await _googleSignIn.signIn();
-      // Sucesso
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return null;
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      return userCredential.user;
     } catch (error) {
-      print('Erro ao autenticar com o Google: $error');
-      // erro de autenticação
+      print('Error during Google sign-in: $error');
+      return null;
     }
   }
 
@@ -59,12 +79,12 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 Container(
                   width: commonWidth,
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'Username ou e-mail',
+                      labelText: 'Username or email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -77,13 +97,15 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     obscureText: !_passwordVisible,
                     decoration: InputDecoration(
-                      labelText: 'Palavra-passe',
+                      labelText: 'Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.deepPurple,
                         ),
                         onPressed: () {
@@ -100,16 +122,17 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {
-                      // página de recuperação de password  FAZER
+                      // Implement password recovery
                     },
                     child: RichText(
                       text: const TextSpan(
-                        text: 'Não te lembras da palavra-passe? ',
+                        text: 'Forgot your password? ',
                         style: TextStyle(color: Colors.black, fontSize: 12.5),
                         children: <TextSpan>[
                           TextSpan(
-                            text: 'Recupera aqui',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5),
+                            text: 'Recover here',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12.5),
                           ),
                         ],
                       ),
@@ -123,24 +146,36 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage(user: null)),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text('Login', style: TextStyle(color: Colors.white)),
+                    child: const Text('Login',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Container(
                   width: commonWidth,
                   child: ElevatedButton.icon(
-                    onPressed: _handleGoogleSignIn, // login com o Google AQUI
+                    onPressed: () async {
+                      User? user = await _handleGoogleSignIn();
+                      if (user != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomePage(user: user)),
+                        );
+                      }
+                    },
                     icon: Image.asset(
                       'assets/images/gmail_icon.png',
                       width: 24,
@@ -148,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     label: RichText(
                       text: const TextSpan(
-                        text: 'Continuar com o ',
+                        text: 'Continue with ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
@@ -161,7 +196,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                         side: const BorderSide(color: Colors.grey),
@@ -174,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: commonWidth,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // Login com Outlook FAZER
+                      // Implement Outlook login
                     },
                     icon: Image.asset(
                       'assets/images/outlook_icon.png',
@@ -183,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     label: RichText(
                       text: const TextSpan(
-                        text: 'Continuar com o ',
+                        text: 'Continue with ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
@@ -196,7 +232,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                         side: const BorderSide(color: Colors.grey),
@@ -214,12 +251,14 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: RichText(
                     text: const TextSpan(
-                      text: 'Não tens uma conta? ',
+                      text: "Don't have an account? ",
                       style: TextStyle(color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Regista uma aqui',
-                          style: TextStyle(color: Colors.deepPurple ,fontWeight: FontWeight.bold),
+                          text: 'Register here',
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

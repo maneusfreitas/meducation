@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:teste/main.dart';
-
+import 'package:portefolio/main.dart';
 
 class VerificationPage extends StatefulWidget {
   final String email;
 
-  VerificationPage({required this.email});
+  const VerificationPage({required this.email});
 
   @override
   _VerificationPageState createState() => _VerificationPageState();
@@ -59,7 +58,8 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   Widget build(BuildContext context) {
     final double commonWidth = MediaQuery.of(context).size.width * 0.8;
-    String timerText = "${_timerDuration.inMinutes}:${(_timerDuration.inSeconds % 60).toString().padLeft(2, '0')}";
+    String timerText =
+        "${_timerDuration.inMinutes}:${(_timerDuration.inSeconds % 60).toString().padLeft(2, '0')}";
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -91,7 +91,8 @@ class _VerificationPageState extends State<VerificationPage> {
                 ),
                 Text(
                   widget.email,
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
@@ -123,12 +124,14 @@ class _VerificationPageState extends State<VerificationPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[300],
-                      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Cancelar registo', style: TextStyle(color: Colors.white)),
+                    child: Text('Cancelar registo',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -139,7 +142,8 @@ class _VerificationPageState extends State<VerificationPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       side: BorderSide(color: Colors.black),
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -167,12 +171,14 @@ class _VerificationPageState extends State<VerificationPage> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[900],
-                      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Confirmar registo', style: TextStyle(color: Colors.white)),
+                    child: Text('Confirmar registo',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
