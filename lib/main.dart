@@ -1,25 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: LoginPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
+import 'register.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -30,38 +13,24 @@ class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
-  Future<User?> signInWithGoogle() async {
+  get user => null;
+
+  Future<User?> _handleGoogleSignIn() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-      if (googleUser == null) {
-        return null;
-      }
-
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
       );
 
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
       return userCredential.user;
-    } catch (e) {
-      print('Erro ao autenticar com o Google: $e');
+    } catch (error) {
+      print('Erro ao autenticar com o Google: $error');
       return null;
-    }
-  }
-
-  void _handleGoogleSignIn() async {
-    User? user = await signInWithGoogle();
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-    } else {
-      print('Erro ao autenticar com o Google');
     }
   }
 
@@ -111,7 +80,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.deepPurple,
                         ),
                         onPressed: () {
@@ -137,7 +108,8 @@ class _LoginPageState extends State<LoginPage> {
                         children: <TextSpan>[
                           TextSpan(
                             text: 'Recupera aqui',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12.5),
                           ),
                         ],
                       ),
@@ -151,24 +123,39 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: user,
+                                )),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text('Login', style: TextStyle(color: Colors.white)),
+                    child: const Text('Login',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Container(
                   width: commonWidth,
                   child: ElevatedButton.icon(
-                    onPressed: _handleGoogleSignIn, // login com o Google AQUI
+                    onPressed: () async {
+                      User? user = await _handleGoogleSignIn();
+                      if (user != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(user: user),
+                          ),
+                        );
+                      }
+                    },
                     icon: Image.asset(
                       'assets/images/gmail_icon.png',
                       width: 24,
@@ -189,7 +176,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                         side: const BorderSide(color: Colors.grey),
@@ -224,7 +212,8 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                         side: const BorderSide(color: Colors.grey),
@@ -247,7 +236,9 @@ class _LoginPageState extends State<LoginPage> {
                       children: <TextSpan>[
                         TextSpan(
                           text: 'Regista uma aqui',
-                          style: TextStyle(color: Colors.deepPurple ,fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
