@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:portefolio/profile.dart';
 import 'search.dart';
 
 class HomePage extends StatefulWidget {
@@ -128,7 +129,11 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: () {
-                  // ícone do usuário
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage()),
+                        );
                 },
                 icon: Image.asset(
                   'assets/icons/user.png',
