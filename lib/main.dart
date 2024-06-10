@@ -4,22 +4,45 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
 import 'register.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Meducation',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+      ),
+      home: const LoginPage(),
+    );
+  }
+}
+
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
-  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
-
-  get user => null;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   Future<User?> _handleGoogleSignIn() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return null;
+      }
       final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+          await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken,
@@ -29,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           await FirebaseAuth.instance.signInWithCredential(credential);
       return userCredential.user;
     } catch (error) {
-      print('Erro ao autenticar com o Google: $error');
+      print('Error during Google sign-in: $error');
       return null;
     }
   }
@@ -56,12 +79,12 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 Container(
                   width: commonWidth,
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'Username ou e-mail',
+                      labelText: 'Username or email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -74,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     obscureText: !_passwordVisible,
                     decoration: InputDecoration(
-                      labelText: 'Palavra-passe',
+                      labelText: 'Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -99,15 +122,15 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {
-                      // página de recuperação de password  FAZER
+                      // Implement password recovery
                     },
                     child: RichText(
                       text: const TextSpan(
-                        text: 'Não te lembras da palavra-passe? ',
+                        text: 'Forgot your password? ',
                         style: TextStyle(color: Colors.black, fontSize: 12.5),
                         children: <TextSpan>[
                           TextSpan(
-                            text: 'Recupera aqui',
+                            text: 'Recover here',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 12.5),
                           ),
@@ -124,9 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  user: user,
-                                )),
+                            builder: (context) => const HomePage(user: null)),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -151,8 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(user: user),
-                          ),
+                              builder: (context) => HomePage(user: user)),
                         );
                       }
                     },
@@ -163,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     label: RichText(
                       text: const TextSpan(
-                        text: 'Continuar com o ',
+                        text: 'Continue with ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
@@ -190,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: commonWidth,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // Login com Outlook FAZER
+                      // Implement Outlook login
                     },
                     icon: Image.asset(
                       'assets/images/outlook_icon.png',
@@ -199,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     label: RichText(
                       text: const TextSpan(
-                        text: 'Continuar com o ',
+                        text: 'Continue with ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
@@ -231,11 +251,11 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: RichText(
                     text: const TextSpan(
-                      text: 'Não tens uma conta? ',
+                      text: "Don't have an account? ",
                       style: TextStyle(color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Regista uma aqui',
+                          text: 'Register here',
                           style: TextStyle(
                               color: Colors.deepPurple,
                               fontWeight: FontWeight.bold),

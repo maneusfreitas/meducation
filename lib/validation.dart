@@ -119,7 +119,7 @@ class _VerificationPageState extends State<VerificationPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        MaterialPageRoute(builder: (context) => MyApp()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

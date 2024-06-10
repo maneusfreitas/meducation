@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:portefolio/main.dart';
-
 import 'search.dart';
 
 class HomePage extends StatefulWidget {
-  final User user;
+  final User? user;
 
-  const HomePage({super.key, required this.user});
+  const HomePage({super.key, this.user});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -43,7 +41,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                'Hello, ${widget.user.displayName}',
+                'Hello, ${widget.user?.displayName ?? 'Guest'}',
                 style: const TextStyle(
                     color: Color.fromARGB(255, 1, 1, 1),
                     fontWeight: FontWeight.bold),
@@ -74,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_file != null) Text('File selected: ${_file!.path}')
           ],
         ),
@@ -144,10 +142,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: LoginPage(),
-  ));
 }
