@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'validation.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -10,6 +11,26 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+
+  Future<void> _register() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                VerificationPage(email: _emailController.text)),
+      );
+    } catch (e) {
+      print("Error registering user: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Registo'),
+        title: Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -54,9 +75,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   width: commonWidth,
                   child: TextField(
+                    controller: _passwordController,
                     obscureText: !_passwordVisible,
                     decoration: InputDecoration(
-                      labelText: 'Palavra-passe',
+                      labelText: 'Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -80,9 +102,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 Container(
                   width: commonWidth,
                   child: TextField(
+                    controller: _confirmPasswordController,
                     obscureText: !_confirmPasswordVisible,
                     decoration: InputDecoration(
-                      labelText: 'Confirmar Palavra-passe',
+                      labelText: 'Confirm Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -105,29 +128,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: 20),
                 Container(
                   width: commonWidth,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Data de Nascimento',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    onTap: () async {},
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  width: commonWidth,
                   child: ElevatedButton(
-                    onPressed: () {
-                      String email = _emailController.text;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                VerificationPage(email: email)),
-                      );
-                    },
+                    onPressed: _register,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       padding:
@@ -136,8 +138,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Verificar Conta',
-                        style: TextStyle(color: Colors.white)),
+                    child:
+                        Text('Register', style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
