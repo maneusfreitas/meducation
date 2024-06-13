@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'validation.dart';
+import 'package:portefolio/validation.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -16,19 +16,25 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _register() async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
 
+      // Navigate to verification page
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                VerificationPage(email: _emailController.text)),
+          builder: (context) => VerificationPage(
+            email: _emailController.text,
+          ),
+        ),
       );
     } catch (e) {
       print("Error registering user: $e");
+      // Handle registration errors
+      // For example, show an error message to the user
     }
   }
 

@@ -1,33 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:portefolio/profile.dart';
-import 'search.dart';
+import 'package:portefolio/search.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   final User? user;
 
-  const HomePage({super.key, this.user});
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  File? _file;
-
-  Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      setState(() {
-        _file = File(result.files.single.path!);
-      });
-    } else {
-      // User canceled the picker
-    }
-  }
+  const HomePage({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +21,11 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                'Hello, ${widget.user?.displayName ?? 'Guest'}',
+                'Hello, ${user?.email ?? 'Guest'}',
                 style: const TextStyle(
-                    color: Color.fromARGB(255, 1, 1, 1),
-                    fontWeight: FontWeight.bold),
+                  color: Color.fromARGB(255, 1, 1, 1),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -56,9 +36,11 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: _pickFile,
+              onPressed: () {
+                // Implement file picking logic
+              },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple, // Background color
+                backgroundColor: Colors.deepPurple,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 shape: RoundedRectangleBorder(
@@ -74,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 20),
-            if (_file != null) Text('File selected: ${_file!.path}')
+            // Display file name or any other content based on your logic
           ],
         ),
       ),
@@ -87,7 +69,9 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Implement favorite logic
+                },
                 icon: Image.asset(
                   'assets/icons/heart.png',
                   width: 24,
@@ -109,7 +93,7 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: () {
-                  // ícone da casa
+                  // Navigate to home page
                 },
                 icon: Image.asset(
                   'assets/icons/home.png',
@@ -119,7 +103,7 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: () {
-                  // ícone da estrela
+                  // Implement star logic
                 },
                 icon: Image.asset(
                   'assets/icons/star.png',
@@ -130,10 +114,9 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 onPressed: () {
                   Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage()),
-                        );
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
                 },
                 icon: Image.asset(
                   'assets/icons/user.png',

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:portefolio/main.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,6 +12,20 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+        (route) => false,
+      );
+    } catch (e) {
+      print('Error signing out: $e');
+      // Handle error signing out
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +84,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.analytics),
-                        Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
+                        Padding(
+                            padding: EdgeInsets.only(left: 2.5, right: 2.5)),
                         Text('Estatísticas')
                       ],
                     ),
@@ -88,7 +105,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.circle),
-                        Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
+                        Padding(
+                            padding: EdgeInsets.only(left: 2.5, right: 2.5)),
                         Text('myNiko')
                       ],
                     ),
@@ -109,7 +127,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.edit),
-                        Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
+                        Padding(
+                            padding: EdgeInsets.only(left: 2.5, right: 2.5)),
                         Text('Gerir conta')
                       ],
                     ),
@@ -130,7 +149,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.delete),
-                        Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
+                        Padding(
+                            padding: EdgeInsets.only(left: 2.5, right: 2.5)),
                         Text('Eliminar conta')
                       ],
                     ),
@@ -142,12 +162,25 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: Color.fromARGB(255, 218, 218, 218),
                           height: 1)),
                   const SizedBox(height: 25),
-                  const Text(
-                    'Logout',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                      color: Color.fromRGBO(60, 0, 90, 1),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.red,
+                      fixedSize: const Size(275, 50),
+                      side: const BorderSide(
+                          color: Color.fromARGB(255, 218, 218, 218)),
+                    ),
+                    onPressed: _signOut,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.logout),
+                        Padding(
+                            padding: EdgeInsets.only(left: 2.5, right: 2.5)),
+                        Text('Logout')
+                      ],
                     ),
                   ),
                 ],

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home.dart';
-import 'register.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:portefolio/home.dart';
+import 'package:portefolio/register.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       home: const LoginPage(),
-      debugShowCheckedModeBanner: false
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -33,6 +36,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   Future<User?> _handleGoogleSignIn() async {
@@ -55,6 +60,32 @@ class _LoginPageState extends State<LoginPage> {
     } catch (error) {
       print('Error during Google sign-in: $error');
       return null;
+    }
+  }
+
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(user: userCredential.user),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Failed to sign in with email and password: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to sign in. Check your credentials."),
+        ),
+      );
     }
   }
 
@@ -84,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   width: commonWidth,
                   child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Username or email',
                       border: OutlineInputBorder(
@@ -96,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   width: commonWidth,
                   child: TextField(
+                    controller: _passwordController,
                     obscureText: !_passwordVisible,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -133,7 +166,9 @@ class _LoginPageState extends State<LoginPage> {
                           TextSpan(
                             text: 'Recover here',
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12.5),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12.5,
+                            ),
                           ),
                         ],
                       ),
@@ -144,13 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   width: commonWidth,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage(user: null)),
-                      );
-                    },
+                    onPressed: _signInWithEmailAndPassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       padding: const EdgeInsets.symmetric(
@@ -173,7 +202,8 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomePage(user: user)),
+                            builder: (context) => HomePage(user: user),
+                          ),
                         );
                       }
                     },
@@ -189,42 +219,6 @@ class _LoginPageState extends State<LoginPage> {
                         children: <TextSpan>[
                           TextSpan(
                             text: 'Google',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        side: const BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: commonWidth,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      // Implement Outlook login
-                    },
-                    icon: Image.asset(
-                      'assets/images/outlook_icon.png',
-                      width: 24,
-                      height: 24,
-                    ),
-                    label: RichText(
-                      text: const TextSpan(
-                        text: 'Continue with ',
-                        style: TextStyle(color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Outlook',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -258,8 +252,9 @@ class _LoginPageState extends State<LoginPage> {
                         TextSpan(
                           text: 'Register here',
                           style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:portefolio/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'register.dart'; // Update this with the correct import for RegisterPage
+import 'home.dart'; // Replace with your home page import
 
 class VerificationPage extends StatefulWidget {
   final String email;
@@ -51,7 +53,34 @@ class _VerificationPageState extends State<VerificationPage> {
         _timerDuration = Duration(minutes: 5);
         _startTimer();
       });
-      // FAZER reenvio de código
+      // Implement resend verification code logic here
+      // Example: FirebaseAuth.instance.sendEmailVerification();
+    }
+  }
+
+  void _verifyCode() async {
+    try {
+      // Verify the code entered by the user
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: widget.email, password: _codeController.text);
+
+      // Check if the user's email is verified
+      if (userCredential.user!.emailVerified) {
+        // Navigate to home page or any other screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(user: userCredential.user)),
+        );
+      } else {
+        // Email not verified, handle accordingly
+        // Example: Show error message or prompt to resend verification
+      }
+    } catch (e) {
+      print("Error verifying code: $e");
+      // Handle verification errors
+      // Example: Show error message to the user
     }
   }
 
@@ -65,7 +94,7 @@ class _VerificationPageState extends State<VerificationPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Verificação de E-mail'),
+        title: Text('Email Verification'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -85,7 +114,7 @@ class _VerificationPageState extends State<VerificationPage> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Enviámos um código de verificação para o e-mail',
+                  'We have sent a verification code to the email',
                   style: TextStyle(color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
@@ -101,7 +130,7 @@ class _VerificationPageState extends State<VerificationPage> {
                   child: TextField(
                     controller: _codeController,
                     decoration: InputDecoration(
-                      labelText: 'Código de verificação',
+                      labelText: 'Verification Code',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -117,9 +146,9 @@ class _VerificationPageState extends State<VerificationPage> {
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => MyApp()),
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -130,7 +159,7 @@ class _VerificationPageState extends State<VerificationPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Cancelar registo',
+                    child: Text('Cancel Registration',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
@@ -150,11 +179,11 @@ class _VerificationPageState extends State<VerificationPage> {
                     ),
                     child: RichText(
                       text: TextSpan(
-                        text: 'Reenviar código ',
+                        text: 'Resend Code ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
-                            text: '(${_attemptsRemaining} tentativas)',
+                            text: '($_attemptsRemaining attempts)',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -166,9 +195,7 @@ class _VerificationPageState extends State<VerificationPage> {
                 Container(
                   width: commonWidth,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Lógica para confirmar o registro
-                    },
+                    onPressed: _verifyCode,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[900],
                       padding:
@@ -177,7 +204,7 @@ class _VerificationPageState extends State<VerificationPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Confirmar registo',
+                    child: Text('Verify Registration',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
