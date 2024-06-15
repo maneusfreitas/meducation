@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:portefolio/home.dart';
-import 'package:portefolio/register.dart';
+import 'package:portefolio/src/screens/home.dart';
+import 'package:portefolio/src/screens/register.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('examples')
+          .doc('IKOl8O4B4YUgcBepIXSD')
+          .get();
+      final Map<String, dynamic>? userData =
+          userSnapshot.data() as Map<String, dynamic>?;
+      var name = userData?['name'] ?? 0;
   runApp(const MyApp());
 }
 

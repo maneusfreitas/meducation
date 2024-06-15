@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:portefolio/profile.dart';
-import 'package:portefolio/search.dart';
+import 'package:portefolio/src/screens/profile.dart';
+import 'package:portefolio/src/screens/search.dart';
 
 class HomePage extends StatelessWidget {
   final User? user;
@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -114,9 +115,12 @@ class HomePage extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
-                  );
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) => const ProfilePage(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ));
                 },
                 icon: Image.asset(
                   'assets/icons/user.png',

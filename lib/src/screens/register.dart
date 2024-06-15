@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:portefolio/validation.dart';
+import 'package:portefolio/src/screens/validation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -21,6 +22,8 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+
+      await FirebaseFirestore.instance.collection('examples').add({'name': 'adeus'});
 
       // Navigate to verification page
       Navigator.push(
