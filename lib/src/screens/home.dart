@@ -7,9 +7,10 @@ import 'package:portefolio/src/screens/search.dart';
 class HomePage extends StatefulWidget {
   final User? user;
 
-  const HomePage({Key? key, required this.user}) : super(key: key);
+  const HomePage({super.key, required this.user});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
           });
         }
       } catch (e) {
-        print("Error fetching user name: $e");
+        return;
       }
     }
   }
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SearchPage()),
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
                   );
                 },
                 icon: Image.asset(

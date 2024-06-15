@@ -9,6 +9,7 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.user});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -33,8 +34,9 @@ class _ProfilePageState extends State<ProfilePage> {
             _userName = userDoc.get('name') ?? 'Guest';
           });
         }
-        // ignore: empty_catches
-      } catch (e) {}
+      } catch (e) {
+        return;
+      }
     }
   }
 
@@ -42,12 +44,13 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false,
       );
     } catch (e) {
-      print("Error signing out: $e");
+      return;
     }
   }
 

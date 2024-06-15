@@ -9,16 +9,17 @@ import 'home.dart'; // Replace with your home page import
 class VerificationPage extends StatefulWidget {
   final String email;
 
-  const VerificationPage({required this.email});
+  const VerificationPage({super.key, required this.email});
 
   @override
+  // ignore: library_private_types_in_public_api
   _VerificationPageState createState() => _VerificationPageState();
 }
 
 class _VerificationPageState extends State<VerificationPage> {
-  TextEditingController _codeController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
   int _attemptsRemaining = 3;
-  Duration _timerDuration = Duration(minutes: 5);
+  Duration _timerDuration = const Duration(minutes: 5);
   late Timer _timer;
 
   @override
@@ -28,7 +29,7 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timerDuration.inSeconds > 0) {
         setState(() {
           _timerDuration = Duration(seconds: _timerDuration.inSeconds - 1);
@@ -50,7 +51,7 @@ class _VerificationPageState extends State<VerificationPage> {
     if (_attemptsRemaining > 0) {
       setState(() {
         _attemptsRemaining--;
-        _timerDuration = Duration(minutes: 5);
+        _timerDuration = const Duration(minutes: 5);
         _startTimer();
       });
       // Implement resend verification code logic here
@@ -69,18 +70,16 @@ class _VerificationPageState extends State<VerificationPage> {
       if (userCredential.user!.emailVerified) {
         // Navigate to home page or any other screen
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
               builder: (context) => HomePage(user: userCredential.user)),
         );
       } else {
-        // Email not verified, handle accordingly
-        // Example: Show error message or prompt to resend verification
+        // TO DO
       }
     } catch (e) {
-      print("Error verifying code: $e");
-      // Handle verification errors
-      // Example: Show error message to the user
+      return;
     }
   }
 
@@ -94,7 +93,7 @@ class _VerificationPageState extends State<VerificationPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Email Verification'),
+        title: const Text('Email Verification'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -104,7 +103,7 @@ class _VerificationPageState extends State<VerificationPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Meducation',
                   style: TextStyle(
                     fontSize: 36,
@@ -112,20 +111,20 @@ class _VerificationPageState extends State<VerificationPage> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   'We have sent a verification code to the email',
                   style: TextStyle(color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
                 Text(
                   widget.email,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _codeController,
@@ -139,40 +138,41 @@ class _VerificationPageState extends State<VerificationPage> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(timerText, style: TextStyle(fontSize: 20)),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                Text(timerText, style: const TextStyle(fontSize: 20)),
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[300],
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Cancel Registration',
+                    child: const Text('Cancel Registration',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                SizedBox(height: 10),
-                Container(
+                const SizedBox(height: 10),
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: _attemptsRemaining > 0 ? _resendCode : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      side: BorderSide(color: Colors.black),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      side: const BorderSide(color: Colors.black),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -180,31 +180,31 @@ class _VerificationPageState extends State<VerificationPage> {
                     child: RichText(
                       text: TextSpan(
                         text: 'Resend Code ',
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
                             text: '($_attemptsRemaining attempts)',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: _verifyCode,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple[900],
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: Text('Verify Registration',
+                    child: const Text('Verify Registration',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),

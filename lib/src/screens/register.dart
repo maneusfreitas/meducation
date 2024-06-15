@@ -3,21 +3,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:portefolio/src/screens/validation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart'; // Add this line
+import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   File? _image;
 
   final ImagePicker _picker = ImagePicker();
@@ -40,10 +44,8 @@ class _RegisterPageState extends State<RegisterPage> {
       UploadTask uploadTask = storageReference.putFile(image);
       TaskSnapshot taskSnapshot = await uploadTask;
       String downloadURL = await taskSnapshot.ref.getDownloadURL();
-      print("Download URL: $downloadURL"); // Debug print
       return downloadURL;
     } catch (e) {
-      print("Error uploading image: $e");
       return null;
     }
   }
@@ -70,8 +72,8 @@ class _RegisterPageState extends State<RegisterPage> {
         'photoUrl': imageUrl,
       });
 
-      // Navigate to verification page
       Navigator.push(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
           builder: (context) => VerificationPage(
@@ -80,9 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
     } catch (e) {
-      print("Error registering user: $e");
-      // Handle registration errors
-      // For example, show an error message to the user
+      return;
     }
   }
 
@@ -94,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -104,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Meducation',
                   style: TextStyle(
                     fontSize: 36,
@@ -112,14 +112,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: _pickImage,
                   child: CircleAvatar(
                     radius: 40,
                     backgroundImage: _image != null ? FileImage(_image!) : null,
                     child: _image == null
-                        ? Icon(
+                        ? const Icon(
                             Icons.camera_alt,
                             size: 40,
                             color: Colors.grey,
@@ -127,8 +127,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         : null,
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _nameController,
@@ -140,8 +140,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _emailController,
@@ -153,8 +153,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _passwordController,
@@ -180,8 +180,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _confirmPasswordController,
@@ -207,21 +207,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
+                const SizedBox(height: 20),
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: _register,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child:
-                        Text('Register', style: TextStyle(color: Colors.white)),
+                    child: const Text('Register',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],

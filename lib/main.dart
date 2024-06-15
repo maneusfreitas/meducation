@@ -4,23 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:portefolio/src/screens/home.dart';
 import 'package:portefolio/src/screens/register.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('examples')
-          .doc('IKOl8O4B4YUgcBepIXSD')
-          .get();
-      final Map<String, dynamic>? userData =
-          userSnapshot.data() as Map<String, dynamic>?;
-      var name = userData?['name'] ?? 0;
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +58,6 @@ class _LoginPageState extends State<LoginPage> {
           await FirebaseAuth.instance.signInWithCredential(credential);
       return userCredential.user;
     } catch (error) {
-      print('Error during Google sign-in: $error');
       return null;
     }
   }
@@ -90,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       print('Failed to sign in with email and password: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Failed to sign in. Check your credentials."),
         ),
       );
