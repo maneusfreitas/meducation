@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portefolio/main.dart';
+import 'package:portefolio/src/screens/niko.dart';
 
 class ProfilePage extends StatefulWidget {
   final User? user;
@@ -15,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String _userName = 'Guest';
+  String? _photoUrl; // To store the profile photo URL
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if (userDoc.exists) {
           setState(() {
             _userName = userDoc.get('name') ?? 'Guest';
+            _photoUrl = userDoc.get('photoUrl'); // Fetch the photo URL
           });
         }
       } catch (e) {
@@ -51,6 +54,49 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     } catch (e) {
       return;
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      bool? confirmed = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: const Text(
+              'Are you sure you want to delete your account? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user!.uid)
+          .delete();
+      await widget.user!.delete();
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (route) => false,
+      );
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting account: $e')),
+      );
     }
   }
 
@@ -77,11 +123,17 @@ class _ProfilePageState extends State<ProfilePage> {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Image.asset(
-                'assets/images/profile_example.png',
-                width: 100,
-                height: 100,
-              ),
+              if (_photoUrl != null)
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(_photoUrl!),
+                )
+              else
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage:
+                      AssetImage('assets/images/profile_example.png'),
+                ),
               Text(
                 _userName,
                 style: const TextStyle(
@@ -128,7 +180,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ImagePage()),
+                  );
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -170,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: _deleteAccount,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
