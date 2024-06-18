@@ -124,12 +124,14 @@ class _ImagePageState extends State<ImagePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton(
+                  heroTag: 'toggleColor', // Unique tag
                   onPressed: _toggleColor,
                   backgroundColor: Colors.deepPurple,
                   child: const Icon(Icons.color_lens),
                 ),
                 const SizedBox(width: 20),
                 FloatingActionButton(
+                  heroTag: 'toggleStyle', // Unique tag
                   onPressed: _toggleStyle,
                   backgroundColor: Colors.deepPurple,
                   child: const Icon(Icons.style),
