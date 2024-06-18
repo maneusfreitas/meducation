@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portefolio/src/screens/profile.dart';
+import 'package:portefolio/src/screens/quiz/case.dart';
 import 'package:portefolio/src/screens/search.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _userName = 'Guest';
+  List something = [];
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _HomePageState extends State<HomePage> {
             .collection('users')
             .doc(widget.user!.uid)
             .get();
+
         if (userDoc.exists) {
           setState(() {
             _userName = userDoc.get('name') ?? 'Guest';
@@ -103,7 +106,12 @@ class _HomePageState extends State<HomePage> {
             children: [
               IconButton(
                 onPressed: () {
-                  // Implement favorite logic
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Case(),
+                    ),
+                  );
                 },
                 icon: Image.asset(
                   'assets/icons/heart.png',
