@@ -2,15 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:portefolio/main.dart';
+import 'package:portefolio/src/screens/editProfile.dart';
 import 'package:portefolio/src/screens/niko.dart';
 
 class ProfilePage extends StatefulWidget {
   final User? user;
 
-  const ProfilePage({super.key, required this.user});
+  const ProfilePage({Key? key, required this.user}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -47,7 +47,6 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false,
@@ -87,13 +86,11 @@ class _ProfilePageState extends State<ProfilePage> {
       await widget.user!.delete();
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false,
       );
     } catch (e) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error deleting account: $e')),
       );
@@ -206,7 +203,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePage(user: widget.user),
+                    ),
+                  );
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
