@@ -117,7 +117,11 @@ class _ImagePageState extends State<ImagePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _imageUrl != null
-                ? Image.network(_imageUrl!)
+                ? SizedBox(
+                    width: 350,
+                    height: 350,
+                    child: Image.network(_imageUrl!),
+                  )
                 : const CircularProgressIndicator(),
             const SizedBox(height: 20),
             Row(
