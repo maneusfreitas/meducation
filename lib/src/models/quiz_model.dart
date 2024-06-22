@@ -1,7 +1,7 @@
-import 'package:portefolio/src/models/question.dart';
+import 'package:portefolio/src/models/question_model.dart';
 
-class Quiz {
-  const Quiz({
+class Case {
+  const Case({
     required this.title,
     required this.questions,
   });

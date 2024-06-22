@@ -1,4 +1,4 @@
-import 'package:portefolio/src/models/answer.dart';
+import 'package:portefolio/src/models/answer_model.dart';
 
 class Question {
   const Question({
