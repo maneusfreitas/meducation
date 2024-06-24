@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portefolio/src/screens/profile.dart';
-import 'package:portefolio/src/screens/search.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 class HomePage extends StatefulWidget {
   final User? user;
@@ -10,7 +6,6 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.user});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -36,7 +31,7 @@ class _HomePageState extends State<HomePage> {
           });
         }
       } catch (e) {
-        return;
+        print('Error fetching user name: $e');
       }
     }
   }

@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:portefolio/src/screens/home.dart';
-import 'package:portefolio/src/screens/register.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,9 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portefolio/main.dart';
-import 'package:portefolio/src/screens/editProfile.dart';
-import 'package:portefolio/src/screens/niko.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 class ProfilePage extends StatefulWidget {
   final User? user;

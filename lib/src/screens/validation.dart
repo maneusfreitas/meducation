@@ -1,10 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'register.dart'; // Update this with the correct import for RegisterPage
-import 'home.dart'; // Replace with your home page import
+import 'package:portefolio/src/imports/imports.dart';
 
 class VerificationPage extends StatefulWidget {
   final String email;
