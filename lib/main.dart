@@ -35,6 +35,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
+  Future<void> _saveUserData(User user) async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'name': user.displayName,
+        'email': user.email,
+        'photoUrl': user.photoURL,
+        'currentImage': 'sad_niko_purple.png', // Add this line
+      });
+    }
+  }
+
   Future<User?> _handleGoogleSignIn() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -51,8 +67,15 @@ class _LoginPageState extends State<LoginPage> {
 
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      return userCredential.user;
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await _saveUserData(user); // Save user data to Firestore
+      }
+
+      return user;
     } catch (error) {
+      print('Error signing in with Google: $error');
       return null;
     }
   }
@@ -66,6 +89,8 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (userCredential.user != null) {
+        await _saveUserData(
+            userCredential.user!); // Save user data to Firestore
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

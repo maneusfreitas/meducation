@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
           });
         }
       } catch (e) {
-        return;
+        print('Error fetching user name: $e');
       }
     }
   }
@@ -47,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
         (route) => false,
       );
     } catch (e) {
-      return;
+      print('Error signing out: $e');
     }
   }
 
@@ -89,6 +89,34 @@ class _ProfilePageState extends State<ProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error deleting account: $e')),
       );
+    }
+  }
+
+  Future<void> _checkGoogleSignIn() async {
+    if (widget.user != null) {
+      try {
+        final signInMethods = await FirebaseAuth.instance
+            .fetchSignInMethodsForEmail(widget.user!.email!);
+        print('Sign-in methods: $signInMethods');
+        if (signInMethods.contains('google.com')) {
+          print('User is signed in with Google');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'Com a utilização da conta Google, não é possível gerir a sua conta.'),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditProfilePage(user: widget.user),
+            ),
+          );
+        }
+      } catch (e) {
+        print('Error checking sign-in methods: $e');
+      }
     }
   }
 
@@ -198,14 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditProfilePage(user: widget.user),
-                    ),
-                  );
-                },
+                onPressed: _checkGoogleSignIn,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
