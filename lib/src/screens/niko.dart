@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:portefolio/src/imports/imports.dart';
 
 class ImagePage extends StatefulWidget {
@@ -9,19 +7,26 @@ class ImagePage extends StatefulWidget {
   _ImagePageState createState() => _ImagePageState();
 }
 
-class _ImagePageState extends State<ImagePage> {
-  String? _currentColor = 'green';
-  String? _currentStyle = 'happy';
-  String? _imageUrl;
+class _ImagePageState extends State<ImagePage>
+    with SingleTickerProviderStateMixin {
+  String _currentStyle = 'happy';
   final User? user = FirebaseAuth.instance.currentUser;
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  Map<String, String> _imageUrls = {}; // Map to store image URLs
 
   @override
   void initState() {
     super.initState();
-    _fetchSavedImage();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+    _fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(_controller);
+    _preloadImageUrls();
   }
 
-  Future<void> _fetchSavedImage() async {
+  Future<void> _preloadImageUrls() async {
     if (user != null) {
       try {
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
@@ -31,57 +36,63 @@ class _ImagePageState extends State<ImagePage> {
         if (userDoc.exists) {
           String? savedImage = userDoc.get('currentImage');
           if (savedImage != null) {
-            List<String> parts = savedImage.split('_');
             setState(() {
-              _currentStyle = parts[0];
-              _currentColor = parts[2].split('.').first;
-              _fetchImageUrl();
+              _currentStyle = savedImage.split('.').first;
             });
           }
         }
       } catch (e) {
-        // Handle error if needed
-        return;
+        print('Error fetching saved image: $e');
       }
     }
-  }
-
-  Future<void> _fetchImageUrl() async {
-    try {
-      if (_currentColor != null && _currentStyle != null) {
-        String imageName = '${_currentStyle}_niko_${_currentColor}.png';
+    List<String> styles = ['happy', 'happy2', 'happy3', 'happy4', 'happy5'];
+    for (String style in styles) {
+      try {
+        String imageName = '$style.png';
         String downloadURL = await FirebaseStorage.instance
             .ref('niko/$imageName')
             .getDownloadURL();
-
-        setState(() {
-          _imageUrl = downloadURL;
-        });
+        _imageUrls[style] = downloadURL;
+      } catch (e) {
+        // Handle error if needed
+        print('Error loading image URL for style $style: $e');
       }
-    } catch (e) {
-      // Handle error if needed
-      return;
     }
-  }
-
-  void _toggleColor() {
     setState(() {
-      _currentColor = _currentColor == 'green' ? 'purple' : 'green';
-      _fetchImageUrl();
+      _controller.forward();
     });
   }
 
   void _toggleStyle() {
     setState(() {
-      _currentStyle = _currentStyle == 'happy' ? 'sad' : 'happy';
-      _fetchImageUrl();
+      switch (_currentStyle) {
+        case 'happy':
+          _currentStyle = 'happy2';
+          break;
+        case 'happy2':
+          _currentStyle = 'happy3';
+          break;
+        case 'happy3':
+          _currentStyle = 'happy4';
+          break;
+        case 'happy4':
+          _currentStyle = 'happy5';
+          break;
+        case 'happy5':
+          _currentStyle = 'happy';
+          break;
+        default:
+          _currentStyle = 'happy';
+      }
+      _controller.reset();
+      _controller.forward();
     });
   }
 
   Future<void> _saveImageName() async {
     try {
-      if (_currentColor != null && _currentStyle != null) {
-        String imageName = '${_currentStyle}_niko_${_currentColor}.png';
+      if (_currentStyle.isNotEmpty) {
+        String imageName = '$_currentStyle.png';
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user!.uid)
@@ -101,6 +112,7 @@ class _ImagePageState extends State<ImagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // Set background to white
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
@@ -114,31 +126,22 @@ class _ImagePageState extends State<ImagePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _imageUrl != null
-                ? SizedBox(
-                    width: 350,
-                    height: 350,
-                    child: Image.network(_imageUrl!),
+            _imageUrls[_currentStyle] != null
+                ? FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SizedBox(
+                      width: 400, // Increased width
+                      height: 400, // Increased height
+                      child: Image.network(_imageUrls[_currentStyle]!),
+                    ),
                   )
                 : const CircularProgressIndicator(),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  heroTag: 'toggleColor', // Unique tag
-                  onPressed: _toggleColor,
-                  backgroundColor: Colors.deepPurple,
-                  child: const Icon(Icons.color_lens),
-                ),
-                const SizedBox(width: 20),
-                FloatingActionButton(
-                  heroTag: 'toggleStyle', // Unique tag
-                  onPressed: _toggleStyle,
-                  backgroundColor: Colors.deepPurple,
-                  child: const Icon(Icons.style),
-                ),
-              ],
+            FloatingActionButton(
+              heroTag: 'toggleStyle', // Unique tag
+              onPressed: _toggleStyle,
+              backgroundColor: Colors.deepPurple,
+              child: const Icon(Icons.style),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -160,5 +163,11 @@ class _ImagePageState extends State<ImagePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

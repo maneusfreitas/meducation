@@ -11,7 +11,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String _userName = 'Guest';
-  String? _photoUrl; // To store the profile photo URL
+  String? _photoUrl;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if (userDoc.exists) {
           setState(() {
             _userName = userDoc.get('name') ?? 'Guest';
-            _photoUrl = userDoc.get('photoUrl'); // Fetch the photo URL
+            _photoUrl = userDoc.get('photoUrl');
           });
         }
       } catch (e) {
@@ -56,9 +56,9 @@ class _ProfilePageState extends State<ProfilePage> {
       bool? confirmed = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Confirm Delete'),
+          title: const Text('Confirmação'),
           content: const Text(
-              'Are you sure you want to delete your account? This action cannot be undone.'),
+              'Tens a certeza que pertendes eliminar a conta? Esta ação não é reversível!'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -95,10 +95,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _checkGoogleSignIn() async {
     if (widget.user != null) {
       try {
-        final signInMethods = await FirebaseAuth.instance
-            .fetchSignInMethodsForEmail(widget.user!.email!);
-        print('Sign-in methods: $signInMethods');
-        if (signInMethods.contains('google.com')) {
+        final providers = widget.user!.providerData;
+        bool isGoogleSignIn =
+            providers.any((provider) => provider.providerId == 'google.com');
+
+        if (isGoogleSignIn) {
           print('User is signed in with Google');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -116,6 +117,9 @@ class _ProfilePageState extends State<ProfilePage> {
         }
       } catch (e) {
         print('Error checking sign-in methods: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
       }
     }
   }

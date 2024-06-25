@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
 
       return user;
     } catch (error) {
-      print('Error signing in with Google: $error');
+      print('Erro no login com Google: $error');
       return null;
     }
   }
@@ -99,10 +99,10 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      print('Failed to sign in with email and password: $e');
+      print('Erro no login: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Failed to sign in. Check your credentials."),
+          content: Text("Erro no login, verifique as credenciais."),
         ),
       );
     }

@@ -45,6 +45,9 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _register() async {
+    const String defaultProfileImageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/meducation-fa4f9.appspot.com/o/profile_images%2Fdefault.jpeg?alt=media&token=eaecf0c1-d1e4-47c5-b564-da2a2b2dc18e';
+
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -55,6 +58,8 @@ class _RegisterPageState extends State<RegisterPage> {
       String? imageUrl;
       if (_image != null) {
         imageUrl = await _uploadImage(_image!);
+      } else {
+        imageUrl = defaultProfileImageUrl;
       }
 
       await FirebaseFirestore.instance
