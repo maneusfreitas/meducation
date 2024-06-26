@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:portefolio/src/dataset/dataset.dart';
 import 'package:portefolio/src/screens/profile.dart';
-import 'package:portefolio/src/screens/quiz.dart';
+import 'package:portefolio/src/screens/quiz/quiz_main.dart';
 import 'package:portefolio/src/screens/search.dart';
+import 'package:portefolio/src/screens/quiz/quiz_load.dart';
 
 class HomePage extends StatefulWidget {
   final User? user;
@@ -95,11 +97,13 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const QuizScreen(),
-                  ),
-                );
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                          TestScreen(), // Pass user object here
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
@@ -129,7 +133,9 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  print('assets/icons/heart.png');
+                },
                 icon: Image.asset(
                   'assets/icons/heart.png',
                   width: 24,
@@ -138,24 +144,7 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                            const SearchPage(), // Pass user object here
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ));
-                },
-                icon: Image.asset(
-                  'assets/icons/search.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  // Navigate to home page
+                  print('assets/icons/home.png');
                 },
                 icon: Image.asset(
                   'assets/icons/home.png',
@@ -165,7 +154,7 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: () {
-                  // Implement star logic
+                  print('assets/icons/star.png');
                 },
                 icon: Image.asset(
                   'assets/icons/star.png',

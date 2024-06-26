@@ -1,9 +1,9 @@
 class Answer {
-  const Answer({
+  Answer({
     required this.title,
     required this.result,
   });
 
   final String title;
-  final bool result;
+  bool result;
 }
