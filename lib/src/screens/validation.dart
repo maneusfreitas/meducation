@@ -11,77 +11,33 @@ class VerificationPage extends StatefulWidget {
 }
 
 class _VerificationPageState extends State<VerificationPage> {
-  final TextEditingController _codeController = TextEditingController();
-  int _attemptsRemaining = 3;
-  Duration _timerDuration = const Duration(minutes: 5);
-  late Timer _timer;
-
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    _checkEmailVerified();
   }
 
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timerDuration.inSeconds > 0) {
-        setState(() {
-          _timerDuration = Duration(seconds: _timerDuration.inSeconds - 1);
-        });
-      } else {
-        timer.cancel();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    _codeController.dispose();
-    super.dispose();
-  }
-
-  void _resendCode() {
-    if (_attemptsRemaining > 0) {
-      setState(() {
-        _attemptsRemaining--;
-        _timerDuration = const Duration(minutes: 5);
-        _startTimer();
-      });
-      // Implement resend verification code logic here
-      // Example: FirebaseAuth.instance.sendEmailVerification();
+  Future<void> _checkEmailVerified() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    await user?.reload();
+    if (user != null && user.emailVerified) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
     }
   }
 
-  void _verifyCode() async {
-    try {
-      // Verify the code entered by the user
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-              email: widget.email, password: _codeController.text);
-
-      // Check if the user's email is verified
-      if (userCredential.user!.emailVerified) {
-        // Navigate to home page or any other screen
-        Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(user: userCredential.user)),
-        );
-      } else {
-        // TO DO
-      }
-    } catch (e) {
-      return;
-    }
+  Future<void> _resendVerificationEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    await user?.sendEmailVerification();
   }
 
   @override
   Widget build(BuildContext context) {
     final double commonWidth = MediaQuery.of(context).size.width * 0.8;
-    String timerText =
-        "${_timerDuration.inMinutes}:${(_timerDuration.inSeconds % 60).toString().padLeft(2, '0')}";
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -107,7 +63,7 @@ class _VerificationPageState extends State<VerificationPage> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'We have sent a verification code to the email',
+                  'We have sent a verification link to the email',
                   style: TextStyle(color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
@@ -118,42 +74,25 @@ class _VerificationPageState extends State<VerificationPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: commonWidth,
-                  child: TextField(
-                    controller: _codeController,
-                    decoration: InputDecoration(
-                      labelText: 'Verification Code',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
+                const Text(
+                  'Please check your email and click on the verification link to verify your email address.',
+                  style: TextStyle(color: Colors.black),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
-                Text(timerText, style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 20),
                 SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterPage()),
-                      );
-                    },
+                    onPressed: _resendVerificationEmail,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple[300],
+                      backgroundColor: Colors.deepPurple,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text('Cancel Registration',
+                    child: const Text('Resend Verification Email',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
@@ -161,44 +100,16 @@ class _VerificationPageState extends State<VerificationPage> {
                 SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
-                    onPressed: _attemptsRemaining > 0 ? _resendCode : null,
+                    onPressed: _checkEmailVerified,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.black),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Resend Code ',
-                        style: const TextStyle(color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: '($_attemptsRemaining attempts)',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: commonWidth,
-                  child: ElevatedButton(
-                    onPressed: _verifyCode,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple[900],
+                      backgroundColor: Colors.deepPurple,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 80, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text('Verify Registration',
+                    child: const Text('I Have Verified',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),

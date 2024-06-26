@@ -55,6 +55,9 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordController.text,
       );
 
+      // Send email verification
+      await userCredential.user?.sendEmailVerification();
+
       String? imageUrl;
       if (_image != null) {
         imageUrl = await _uploadImage(_image!);
@@ -81,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
     } catch (e) {
-      return;
+      print('Registration error: $e');
     }
   }
 

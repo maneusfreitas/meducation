@@ -88,13 +88,17 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
-      if (userCredential.user != null) {
-        await _saveUserData(
-            userCredential.user!); // Save user data to Firestore
+      User? user = userCredential.user;
+
+      if (user != null && !user.emailVerified) {
+        await FirebaseAuth.instance.signOut();
+        _showEmailNotVerifiedDialog(user);
+      } else if (user != null && user.emailVerified) {
+        await _saveUserData(user); // Save user data to Firestore
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(user: userCredential.user),
+            builder: (context) => HomePage(user: user),
           ),
         );
       }
@@ -106,6 +110,29 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     }
+  }
+
+  void _showEmailNotVerifiedDialog(User user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Email not verified"),
+        content: const Text("Please verify your email to continue."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await user.sendEmailVerification();
+              Navigator.of(context).pop();
+            },
+            child: const Text("Resend Verification Email"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
