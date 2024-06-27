@@ -89,6 +89,10 @@ class _ResultState extends State<ResultScreen> {
                 SizedBox(
                   height: 25,
                 ),
+                const Image(image: NetworkImage('https://cdn-icons-png.flaticon.com/512/4832/4832868.png'), width: 150, height: 150,),
+                SizedBox(
+                  height: 25,
+                ),
                 const Text('Score',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

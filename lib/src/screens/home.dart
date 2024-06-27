@@ -136,31 +136,19 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   print('assets/icons/heart.png');
                 },
-                icon: Image.asset(
-                  'assets/icons/heart.png',
-                  width: 24,
-                  height: 24,
-                ),
+                icon: Icon(Icons.notifications_outlined,)
               ),
               IconButton(
                 onPressed: () {
                   print('assets/icons/home.png');
                 },
-                icon: Image.asset(
-                  'assets/icons/home.png',
-                  width: 24,
-                  height: 24,
-                ),
+                icon: Icon(Icons.home_outlined)
               ),
               IconButton(
                 onPressed: () {
                   print('assets/icons/star.png');
                 },
-                icon: Image.asset(
-                  'assets/icons/star.png',
-                  width: 24,
-                  height: 24,
-                ),
+                icon: Icon(Icons.star_outline)
               ),
               IconButton(
                 onPressed: () {
@@ -174,11 +162,7 @@ class _HomePageState extends State<HomePage> {
                         reverseTransitionDuration: Duration.zero,
                       ));
                 },
-                icon: Image.asset(
-                  'assets/icons/user.png',
-                  width: 24,
-                  height: 24,
-                ),
+                icon: Icon(Icons.person_outlined)
               ),
             ],
           ),

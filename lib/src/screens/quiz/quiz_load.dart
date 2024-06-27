@@ -102,11 +102,13 @@ class _TestState extends State<TestScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
+                backgroundColor: Colors.white,
                 body: Center(child: CircularProgressIndicator()));
           } else if (snapshot.hasError) {
             return const Center(child: Text('Erro tentar recolher os dados'));
           } else {
             return const Scaffold(
+              backgroundColor: Colors.white,
               body: Center(
                 child: CircularProgressIndicator(),
               ),
