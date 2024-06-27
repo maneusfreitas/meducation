@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portefolio/src/dataset/dataset.dart';
-import 'package:portefolio/src/screens/profile.dart';
-import 'package:portefolio/src/screens/quiz/quiz_main.dart';
-import 'package:portefolio/src/screens/search.dart';
-import 'package:portefolio/src/screens/quiz/quiz_load.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 class HomePage extends StatefulWidget {
   final User? user;
@@ -19,7 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _userName = 'Guest';
-  List something = [];
 
   @override
   void initState() {
@@ -34,14 +26,13 @@ class _HomePageState extends State<HomePage> {
             .collection('users')
             .doc(widget.user!.uid)
             .get();
-
         if (userDoc.exists) {
           setState(() {
             _userName = userDoc.get('name') ?? 'Guest';
           });
         }
       } catch (e) {
-        return;
+        print('Error fetching user name: $e');
       }
     }
   }
@@ -94,33 +85,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                          TestScreen(), // Pass user object here
-                      transitionDuration: Duration.zero,
-                      reverseTransitionDuration: Duration.zero,
-                    ));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              child: const Text(
-                'Play Game',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            )
+            // Display file name or any other content based on your logic
           ],
         ),
       ),
@@ -134,21 +99,46 @@ class _HomePageState extends State<HomePage> {
             children: [
               IconButton(
                 onPressed: () {
-                  print('assets/icons/heart.png');
+                  // Implement favorite logic
                 },
-                icon: Icon(Icons.notifications_outlined,)
+                icon: Image.asset(
+                  'assets/icons/heart.png',
+                  width: 24,
+                  height: 24,
+                ),
               ),
               IconButton(
                 onPressed: () {
-                  print('assets/icons/home.png');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
+                  );
                 },
-                icon: Icon(Icons.home_outlined)
+                icon: Image.asset(
+                  'assets/icons/search.png',
+                  width: 24,
+                  height: 24,
+                ),
               ),
               IconButton(
                 onPressed: () {
-                  print('assets/icons/star.png');
+                  // Navigate to home page
                 },
-                icon: Icon(Icons.star_outline)
+                icon: Image.asset(
+                  'assets/icons/home.png',
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  // Implement star logic
+                },
+                icon: Image.asset(
+                  'assets/icons/star.png',
+                  width: 24,
+                  height: 24,
+                ),
               ),
               IconButton(
                 onPressed: () {
@@ -162,7 +152,11 @@ class _HomePageState extends State<HomePage> {
                         reverseTransitionDuration: Duration.zero,
                       ));
                 },
-                icon: Icon(Icons.person_outlined)
+                icon: Image.asset(
+                  'assets/icons/user.png',
+                  width: 24,
+                  height: 24,
+                ),
               ),
             ],
           ),

@@ -1,20 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:portefolio/main.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 class ProfilePage extends StatefulWidget {
   final User? user;
 
-  const ProfilePage({super.key, required this.user});
+  const ProfilePage({Key? key, required this.user}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   String _userName = 'Guest';
+  String? _photoUrl;
 
   @override
   void initState() {
@@ -32,10 +29,11 @@ class _ProfilePageState extends State<ProfilePage> {
         if (userDoc.exists) {
           setState(() {
             _userName = userDoc.get('name') ?? 'Guest';
+            _photoUrl = userDoc.get('photoUrl');
           });
         }
       } catch (e) {
-        return;
+        print('Error fetching user name: $e');
       }
     }
   }
@@ -44,13 +42,85 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false,
       );
     } catch (e) {
-      return;
+      print('Error signing out: $e');
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      bool? confirmed = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirmação'),
+          content: const Text(
+              'Tens a certeza que pertendes eliminar a conta? Esta ação não é reversível!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user!.uid)
+          .delete();
+      await widget.user!.delete();
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (route) => false,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting account: $e')),
+      );
+    }
+  }
+
+  Future<void> _checkGoogleSignIn() async {
+    if (widget.user != null) {
+      try {
+        final providers = widget.user!.providerData;
+        bool isGoogleSignIn =
+            providers.any((provider) => provider.providerId == 'google.com');
+
+        if (isGoogleSignIn) {
+          print('User is signed in with Google');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'Com a utilização da conta Google, não é possível gerir a sua conta.'),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditProfilePage(user: widget.user),
+            ),
+          );
+        }
+      } catch (e) {
+        print('Error checking sign-in methods: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
 
@@ -77,11 +147,17 @@ class _ProfilePageState extends State<ProfilePage> {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Image.asset(
-                'assets/images/profile_example.png',
-                width: 100,
-                height: 100,
-              ),
+              if (_photoUrl != null)
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(_photoUrl!),
+                )
+              else
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage:
+                      AssetImage('assets/images/profile_example.png'),
+                ),
               Text(
                 _userName,
                 style: const TextStyle(
@@ -128,7 +204,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ImagePage()),
+                  );
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -149,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: _checkGoogleSignIn,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -170,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: _deleteAccount,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

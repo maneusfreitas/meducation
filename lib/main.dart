@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:portefolio/src/screens/home.dart';
-import 'package:portefolio/src/screens/register.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +35,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
+  Future<void> _saveUserData(User user) async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'name': user.displayName,
+        'email': user.email,
+        'photoUrl': user.photoURL,
+        'currentImage': 'sad_niko_purple.png', // Add this line
+      });
+    }
+  }
+
   Future<User?> _handleGoogleSignIn() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -56,8 +67,15 @@ class _LoginPageState extends State<LoginPage> {
 
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      return userCredential.user;
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await _saveUserData(user); // Save user data to Firestore
+      }
+
+      return user;
     } catch (error) {
+      print('Erro no login com Google: $error');
       return null;
     }
   }
@@ -70,22 +88,51 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
-      if (userCredential.user != null) {
+      User? user = userCredential.user;
+
+      if (user != null && !user.emailVerified) {
+        await FirebaseAuth.instance.signOut();
+        _showEmailNotVerifiedDialog(user);
+      } else if (user != null && user.emailVerified) {
+        await _saveUserData(user); // Save user data to Firestore
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(user: userCredential.user),
+            builder: (context) => HomePage(user: user),
           ),
         );
       }
     } catch (e) {
-      print('Failed to sign in with email and password: $e');
+      print('Erro no login: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Failed to sign in. Check your credentials."),
+          content: Text("Erro no login, verifique as credenciais."),
         ),
       );
     }
+  }
+
+  void _showEmailNotVerifiedDialog(User user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Email not verified"),
+        content: const Text("Please verify your email to continue."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await user.sendEmailVerification();
+              Navigator.of(context).pop();
+            },
+            child: const Text("Resend Verification Email"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -116,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      labelText: 'Username or email',
+                      labelText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -155,7 +202,11 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {
-                      // Implement password recovery
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PasswordRecoveryPage()),
+                      );
                     },
                     child: RichText(
                       text: const TextSpan(

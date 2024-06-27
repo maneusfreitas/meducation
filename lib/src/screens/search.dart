@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -104,8 +104,8 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage2 extends StatelessWidget {
+  const HomePage2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -184,10 +184,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: HomePage(),
-  ));
 }

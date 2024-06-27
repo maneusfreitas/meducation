@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:portefolio/src/screens/validation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
+import 'package:portefolio/src/imports/imports.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -51,6 +45,9 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _register() async {
+    const String defaultProfileImageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/meducation-fa4f9.appspot.com/o/profile_images%2Fdefault.jpeg?alt=media&token=eaecf0c1-d1e4-47c5-b564-da2a2b2dc18e';
+
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -58,9 +55,14 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passwordController.text,
       );
 
+      // Send email verification
+      await userCredential.user?.sendEmailVerification();
+
       String? imageUrl;
       if (_image != null) {
         imageUrl = await _uploadImage(_image!);
+      } else {
+        imageUrl = defaultProfileImageUrl;
       }
 
       await FirebaseFirestore.instance
@@ -82,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
     } catch (e) {
-      return;
+      print('Registration error: $e');
     }
   }
 
