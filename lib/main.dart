@@ -202,7 +202,11 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {
-                      // Implement password recovery
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PasswordRecoveryPage()),
+                      );
                     },
                     child: RichText(
                       text: const TextSpan(
