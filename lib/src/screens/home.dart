@@ -31,9 +31,8 @@ class _HomePageState extends State<HomePage> {
             _userName = userDoc.get('name') ?? 'Guest';
           });
         }
-      } catch (e) {
-        print('Error fetching user name: $e');
-      }
+        // ignore: empty_catches
+      } catch (e) {}
     }
   }
 

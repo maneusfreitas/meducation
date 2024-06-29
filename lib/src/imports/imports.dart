@@ -16,6 +16,6 @@ export 'package:portefolio/src/screens/search.dart';
 export 'package:portefolio/src/screens/passwordRecovery.dart';
 
 export 'package:portefolio/main.dart';
-export 'package:portefolio/src/screens/editProfile.dart';
+export 'package:portefolio/src/screens/edit_profile.dart';
 export 'package:portefolio/src/screens/niko.dart';
 export 'package:portefolio/src/screens/validation.dart';

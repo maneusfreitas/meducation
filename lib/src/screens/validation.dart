@@ -22,9 +22,10 @@ class _VerificationPageState extends State<VerificationPage> {
     await user?.reload();
     if (user != null && user.emailVerified) {
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(),
+          builder: (context) => const LoginPage(),
         ),
       );
     }

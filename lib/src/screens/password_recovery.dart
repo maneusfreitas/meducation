@@ -34,7 +34,6 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
       );
       _emailController.clear();
     } catch (e) {
-      print('Error resetting password: $e');
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -69,7 +68,7 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                Container(
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _emailController,
