@@ -13,7 +13,7 @@ export 'package:portefolio/src/screens/home.dart';
 export 'package:portefolio/src/screens/register.dart';
 export 'package:portefolio/src/screens/profile.dart';
 export 'package:portefolio/src/screens/search.dart';
-export 'package:portefolio/src/screens/passwordRecovery.dart';
+export 'package:portefolio/src/screens/password_recovery.dart';
 
 export 'package:portefolio/main.dart';
 export 'package:portefolio/src/screens/edit_profile.dart';
