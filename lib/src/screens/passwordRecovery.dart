@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:portefolio/src/imports/imports.dart';
 
 class PasswordRecoveryPage extends StatefulWidget {
+  const PasswordRecoveryPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _PasswordRecoveryPageState createState() => _PasswordRecoveryPageState();
 }
 
@@ -11,29 +13,29 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
 
   Future<void> _resetPassword() async {
     String email = _emailController.text.trim();
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Password reset email sent."),
+          content: Text("Please enter an email address."),
         ),
       );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("No account found with this email."),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Error resetting password, please try again."),
-          ),
-        );
-      }
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "If an account exists for this email, a password reset email has been sent."),
+        ),
+      );
+      _emailController.clear();
     } catch (e) {
       print('Error resetting password: $e');
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Error resetting password, please try again."),
@@ -47,7 +49,7 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
     final double commonWidth = MediaQuery.of(context).size.width * 0.8;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Set background color to white
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Password Recovery"),
       ),
@@ -80,7 +82,7 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: _resetPassword,
