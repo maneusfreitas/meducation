@@ -23,23 +23,26 @@ class StatisticsPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return const Center(child: Text('Erro tentar recolher os dados'));
           } else {
-            final userData = snapshot.data!;
+            final data = snapshot.data!;
             List<Widget> listW = [];
+            num sumResult = 0;
 
-            for (var resultDoc in userData) {
+            for (var resultDoc in data) {
               if (resultDoc.get('user_id') ==
                   FirebaseAuth.instance.currentUser?.uid) {
-
-                    DateTime now = resultDoc['timestamp'].toDate();
-                    String convertedDateTime = "${now.year.toString()}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')} ${now.hour.toString().padLeft(2,'0')}:${now.minute.toString().padLeft(2,'0')}";
-                    print(convertedDateTime);
+                DateTime now = resultDoc['timestamp'].toDate();
+                String convertedDateTime =
+                    "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+                print(convertedDateTime);
+                sumResult += resultDoc.get('user_score');
 
                 listW.add(Row(
                   children: [
                     Text(convertedDateTime),
-                    SizedBox(width: 50,),
-                        Text(
-                        resultDoc.get('user_score').toString() +
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Text(resultDoc.get('user_score').toString() +
                         '/' +
                         resultDoc.get('quiz_score').toString()),
                     Icon(Icons.star)
@@ -56,7 +59,13 @@ class StatisticsPage extends StatelessWidget {
                 centerTitle: true,
               ),
               body: Column(
-                children: listW,
+                children: [
+                  Text('Average Score: ${sumResult / data.length}'),
+                  SizedBox(height: 50,),
+                  Column(
+                    children: listW,
+                  ),
+                ],
               ),
               bottomNavigationBar: BottomAppBar(
                 color: Colors.white,
