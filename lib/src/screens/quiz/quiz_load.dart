@@ -85,10 +85,10 @@ class _TestState extends State<TestScreen> {
         });
 
         quizDataset
-            .add(Case(title: quizDoc.get('title'), questions: questionDataset));
+            .add(Case(id: quizDoc.id, title: quizDoc.get('title'), questions: questionDataset));
 
         quizDatasetCopy.add(
-            Case(title: quizDoc.get('title'), questions: questionDatasetCopy));
+            Case(id: quizDoc.id, title: quizDoc.get('title'), questions: questionDatasetCopy));
       }
     });
 

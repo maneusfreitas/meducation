@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:portefolio/src/dataset/dataset.dart';
 import 'package:portefolio/src/models/quiz_model.dart';
+import 'package:portefolio/src/models/quiz_result_model.dart';
 import 'package:portefolio/src/screens/home.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -19,6 +21,7 @@ class _ResultState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     double countGood = 0;
     int countGlobalGood = 0;
     int countAnswer = 0;
@@ -46,7 +49,7 @@ class _ResultState extends State<ResultScreen> {
 
           if ((answer.result == resultGood) && (answer.result == true)) {
             countGood++;
-          } else if(answer.result == true && resultGood == false) {
+          } else if (answer.result == true && resultGood == false) {
             countGood = countGood - 0.8;
           }
 
@@ -61,9 +64,12 @@ class _ResultState extends State<ResultScreen> {
     }
 
     double perc = (countGood / countGlobalGood) * 100;
+    
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    FirebaseFirestore.instance.collection('quiz_result').add(QuizResult(userId: uid, quizId: quizDataset.first.id, userScore: countGood.toInt(), quizScore: countGlobalGood, timestamp: Timestamp.now()).toJson());
 
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           forceMaterialTransparency: true,
           backgroundColor: Colors.white,
@@ -89,7 +95,12 @@ class _ResultState extends State<ResultScreen> {
                 SizedBox(
                   height: 25,
                 ),
-                const Image(image: NetworkImage('https://cdn-icons-png.flaticon.com/512/4832/4832868.png'), width: 150, height: 150,),
+                const Image(
+                  image: NetworkImage(
+                      'https://cdn-icons-png.flaticon.com/512/4832/4832868.png'),
+                  width: 150,
+                  height: 150,
+                ),
                 SizedBox(
                   height: 25,
                 ),

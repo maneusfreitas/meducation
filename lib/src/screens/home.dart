@@ -1,4 +1,6 @@
 import 'package:portefolio/src/imports/imports.dart';
+import 'package:portefolio/src/screens/quiz/quiz_load.dart';
+import 'package:portefolio/src/screens/statistics.dart';
 
 class HomePage extends StatefulWidget {
   final User? user;
@@ -85,6 +87,33 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            TestScreen(), // Pass user object here
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              child: const Text(
+                'Play Game',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
             // Display file name or any other content based on your logic
           ],
         ),
@@ -132,7 +161,10 @@ class _HomePageState extends State<HomePage> {
               ),
               IconButton(
                 onPressed: () {
-                  // Implement star logic
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const StatisticsPage()),
+                  );
                 },
                 icon: Image.asset(
                   'assets/icons/star.png',

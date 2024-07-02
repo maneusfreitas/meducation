@@ -1,7 +1,7 @@
 import 'package:portefolio/src/imports/imports.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class NotificationsPage extends StatelessWidget {
+  const NotificationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +77,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: HomePage(),
-  ));
 }
