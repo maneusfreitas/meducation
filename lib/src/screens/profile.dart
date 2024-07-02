@@ -3,9 +3,10 @@ import 'package:portefolio/src/imports/imports.dart';
 class ProfilePage extends StatefulWidget {
   final User? user;
 
-  const ProfilePage({Key? key, required this.user}) : super(key: key);
+  const ProfilePage({super.key, required this.user});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfilePageState createState() => _ProfilePageState();
 }
 
@@ -32,9 +33,8 @@ class _ProfilePageState extends State<ProfilePage> {
             _photoUrl = userDoc.get('photoUrl');
           });
         }
-      } catch (e) {
-        print('Error fetching user name: $e');
-      }
+        // ignore: empty_catches
+      } catch (e) {}
     }
   }
 
@@ -42,13 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false,
       );
-    } catch (e) {
-      print('Error signing out: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<void> _deleteAccount() async {
@@ -81,11 +81,13 @@ class _ProfilePageState extends State<ProfilePage> {
       await widget.user!.delete();
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (route) => false,
       );
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error deleting account: $e')),
       );
@@ -100,7 +102,6 @@ class _ProfilePageState extends State<ProfilePage> {
             providers.any((provider) => provider.providerId == 'google.com');
 
         if (isGoogleSignIn) {
-          print('User is signed in with Google');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -116,7 +117,6 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         }
       } catch (e) {
-        print('Error checking sign-in methods: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
         );

@@ -23,9 +23,10 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -75,7 +76,6 @@ class _LoginPageState extends State<LoginPage> {
 
       return user;
     } catch (error) {
-      print('Erro no login com Google: $error');
       return null;
     }
   }
@@ -96,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
       } else if (user != null && user.emailVerified) {
         await _saveUserData(user); // Save user data to Firestore
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(user: user),
@@ -103,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      print('Erro no login: $e');
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Erro no login, verifique as credenciais."),
@@ -122,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
           TextButton(
             onPressed: () async {
               await user.sendEmailVerification();
+              // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
             },
             child: const Text("Resend Verification Email"),
@@ -158,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                Container(
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _emailController,
@@ -171,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
+                SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _passwordController,
@@ -205,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PasswordRecoveryPage()),
+                            builder: (context) => const PasswordRecoveryPage()),
                       );
                     },
                     child: RichText(
@@ -226,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton(
                     onPressed: _signInWithEmailAndPassword,
@@ -243,13 +245,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
+                SizedBox(
                   width: commonWidth,
                   child: ElevatedButton.icon(
                     onPressed: () async {
                       User? user = await _handleGoogleSignIn();
                       if (user != null) {
                         Navigator.push(
+                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) => HomePage(user: user),
@@ -291,7 +294,8 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage()),
                     );
                   },
                   child: RichText(

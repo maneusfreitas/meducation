@@ -3,16 +3,16 @@ import 'package:portefolio/src/imports/imports.dart';
 class EditProfilePage extends StatefulWidget {
   final User? user;
 
-  const EditProfilePage({Key? key, required this.user}) : super(key: key);
+  const EditProfilePage({super.key, required this.user});
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
-  late String _email;
   String? _password;
   String? _confirmPassword;
   bool _passwordVisible = false;
@@ -21,7 +21,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     _name = widget.user?.displayName ?? '';
-    _email = widget.user?.email ?? '';
   }
 
   Future<void> _updateProfile() async {
@@ -42,21 +41,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (_password != null && _password!.isNotEmpty) {
         await widget.user!.updatePassword(_password!);
       }
-      if (_email.isNotEmpty && _email != widget.user!.email) {
-        await widget.user!.updateEmail(_email);
-      }
 
       await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.user!.uid)
-          .update({'name': _name, 'email': _email});
+          .update({'name': _name});
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile updated successfully')),
       );
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error updating profile: $e')),
       );
@@ -109,26 +108,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: commonWidth,
-                    child: TextFormField(
-                      initialValue: _email,
-                      onChanged: (value) => _email = value,
-                      decoration: InputDecoration(
-                        labelText: 'E-mail',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty || !value.contains('@')) {
-                          return 'Please enter a valid email';
                         }
                         return null;
                       },

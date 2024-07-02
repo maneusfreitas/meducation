@@ -4,6 +4,7 @@ class ImagePage extends StatefulWidget {
   const ImagePage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ImagePageState createState() => _ImagePageState();
 }
 
@@ -13,7 +14,7 @@ class _ImagePageState extends State<ImagePage>
   final User? user = FirebaseAuth.instance.currentUser;
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
-  Map<String, String> _imageUrls = {}; // Map to store image URLs
+  final Map<String, String> _imageUrls = {}; // Map to store image URLs
 
   @override
   void initState() {
@@ -41,9 +42,8 @@ class _ImagePageState extends State<ImagePage>
             });
           }
         }
-      } catch (e) {
-        print('Error fetching saved image: $e');
-      }
+        // ignore: empty_catches
+      } catch (e) {}
     }
     List<String> styles = ['happy', 'happy2', 'happy3', 'happy4', 'happy5'];
     for (String style in styles) {
@@ -55,7 +55,6 @@ class _ImagePageState extends State<ImagePage>
         _imageUrls[style] = downloadURL;
       } catch (e) {
         // Handle error if needed
-        print('Error loading image URL for style $style: $e');
       }
     }
     setState(() {
@@ -98,11 +97,13 @@ class _ImagePageState extends State<ImagePage>
             .doc(user!.uid)
             .update({'currentImage': imageName});
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Image name saved successfully')),
         );
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error saving image name: $e')),
       );

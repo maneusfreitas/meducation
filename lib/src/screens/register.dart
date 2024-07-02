@@ -83,9 +83,8 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
       );
-    } catch (e) {
-      print('Registration error: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   @override
