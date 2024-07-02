@@ -10,12 +10,11 @@ export 'dart:async';
 export 'package:flutter/services.dart';
 
 export 'package:portefolio/src/screens/home.dart';
-export 'package:portefolio/src/screens/register.dart';
-export 'package:portefolio/src/screens/profile.dart';
-export 'package:portefolio/src/screens/search.dart';
-export 'package:portefolio/src/screens/password_recovery.dart';
+export 'package:portefolio/src/screens/auth/register.dart';
+export 'package:portefolio/src/screens/profile/profile.dart';
+export 'package:portefolio/src/screens/auth/password_recovery.dart';
 
 export 'package:portefolio/main.dart';
-export 'package:portefolio/src/screens/edit_profile.dart';
-export 'package:portefolio/src/screens/niko.dart';
-export 'package:portefolio/src/screens/validation.dart';
+export 'package:portefolio/src/screens/profile/edit_profile.dart';
+export 'package:portefolio/src/screens/profile/niko.dart';
+export 'package:portefolio/src/screens/auth/validation.dart';

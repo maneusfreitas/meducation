@@ -1,4 +1,5 @@
 import 'package:portefolio/src/imports/imports.dart';
+import 'package:portefolio/src/screens/notifications.dart';
 import 'package:portefolio/src/screens/quiz/quiz_load.dart';
 import 'package:portefolio/src/screens/statistics.dart';
 
@@ -40,25 +41,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(_userName);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: null,
         backgroundColor: Colors.white,
-        title: const Text('Meducation'),
+        title: const Text('Meducation',
+            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
         centerTitle: true,
-        actions: [
+        toolbarHeight: 40,
+        actions: const [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                'Hello, $_userName',
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 1, 1, 1),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
+            padding: EdgeInsets.only(right: 15.0),
+            child: Icon(Icons.apps, color: Color.fromRGBO(140, 82, 255, 1)),
+          )
         ],
       ),
       body: Center(
@@ -89,13 +87,13 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                            TestScreen(), // Pass user object here
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ));
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) =>
+                          TestScreen(), // Pass user object here
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
@@ -127,68 +125,52 @@ class _HomePageState extends State<HomePage> {
             children: [
               IconButton(
                 onPressed: () {
-                  // Implement favorite logic
+                  Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            NotificationsPage(), // Pass user object here
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ));
                 },
-                icon: Image.asset(
-                  'assets/icons/heart.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchPage()),
-                  );
-                },
-                icon: Image.asset(
-                  'assets/icons/search.png',
-                  width: 24,
-                  height: 24,
-                ),
+                icon: Icon(Icons.notifications_outlined),
               ),
               IconButton(
                 onPressed: () {
                   // Navigate to home page
                 },
-                icon: Image.asset(
-                  'assets/icons/home.png',
-                  width: 24,
-                  height: 24,
+                icon: Icon(
+                  Icons.home,
+                  color: Color.fromRGBO(140, 82, 255, 1),
                 ),
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const StatisticsPage()),
-                  );
-                },
-                icon: Image.asset(
-                  'assets/icons/star.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) =>
-                            ProfilePage(
-                                user: widget.user), // Pass user object here
+                            StatisticsPage(), // Pass user object here
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero,
                       ));
                 },
-                icon: Image.asset(
-                  'assets/icons/user.png',
-                  width: 24,
-                  height: 24,
-                ),
+                icon: Icon(Icons.star_outline),
               ),
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              ProfilePage(
+                                  user: widget.user), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
+                  },
+                  icon: Icon(Icons.person_outlined)),
             ],
           ),
         ),

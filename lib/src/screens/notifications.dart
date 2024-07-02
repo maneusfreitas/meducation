@@ -8,11 +8,20 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: null,
         backgroundColor: Colors.white,
-        title: const Text('Meducation'),
+        title: const Text('Notificações',
+            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
         centerTitle: true,
+        toolbarHeight: 40,
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 15.0),
+            child: Icon(Icons.apps, color: Color.fromRGBO(140, 82, 255, 1)),
+          )
+        ],
       ),
-      body: const Center(),
+      body: Column(),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         child: Container(
@@ -22,55 +31,37 @@ class NotificationsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () {
-                  // ícone da lupa
-                },
-                icon: Image.asset(
-                  'assets/icons/heart.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
+                  onPressed: () {
+                    // ícone da lupa
+                  },
+                  icon: Icon(
+                    Icons.notifications,
+                    color: Color.fromRGBO(140, 82, 255, 1),
+                  )),
               IconButton(
-                onPressed: () {
-                  // ícone do coração
-                },
-                icon: Image.asset(
-                  'assets/icons/search.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              HomePage(user: null), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
+                  },
+                  icon: Icon(Icons.home_outlined)),
               IconButton(
-                onPressed: () {
-                  // ícone da casa
-                },
-                icon: Image.asset(
-                  'assets/icons/home.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
+                  onPressed: () {
+                    // ícone da estrela
+                  },
+                  icon: Icon(
+                    Icons.star_outline,
+                  )),
               IconButton(
-                onPressed: () {
-                  // ícone da estrela
-                },
-                icon: Image.asset(
-                  'assets/icons/star.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  // ícone do usuário
-                },
-                icon: Image.asset(
-                  'assets/icons/user.png',
-                  width: 24,
-                  height: 24,
-                ),
-              ),
+                  onPressed: () {
+                    // ícone do usuário
+                  },
+                  icon: Icon(Icons.person_outlined)),
             ],
           ),
         ),
