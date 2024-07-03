@@ -1,4 +1,5 @@
 import 'package:portefolio/src/imports/imports.dart';
+import 'package:portefolio/src/screens/statistics.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -21,7 +22,18 @@ class NotificationsPage extends StatelessWidget {
           )
         ],
       ),
-      body: Column(),
+      body: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            Icon(
+              Icons.warning,
+              color: Colors.orange,
+            ),
+            SizedBox(height: 10),
+            Text('Em construção')
+          ])),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         child: Container(
@@ -52,7 +64,14 @@ class NotificationsPage extends StatelessWidget {
                   icon: Icon(Icons.home_outlined)),
               IconButton(
                   onPressed: () {
-                    // ícone da estrela
+                    Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              StatisticsPage(), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
                   },
                   icon: Icon(
                     Icons.star_outline,

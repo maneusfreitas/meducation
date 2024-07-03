@@ -1,4 +1,5 @@
 import 'package:portefolio/src/imports/imports.dart';
+import 'package:portefolio/src/screens/notifications.dart';
 
 class StatisticsPage extends StatelessWidget {
   const StatisticsPage({super.key});
@@ -37,16 +38,28 @@ class StatisticsPage extends StatelessWidget {
                 sumResult += resultDoc.get('user_score');
 
                 listW.add(Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(convertedDateTime),
                     SizedBox(
                       width: 50,
                     ),
-                    Text(resultDoc.get('user_score').toString() +
-                        '/' +
-                        resultDoc.get('quiz_score').toString()),
-                    Icon(Icons.star)
+                    Text(
+                      resultDoc.get('user_score').toString() +
+                          '/' +
+                          resultDoc.get('quiz_score').toString(),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.purple,
+                    )
                   ],
+                ));
+
+                listW.add(SizedBox(
+                  height: 20,
                 ));
               }
             }
@@ -70,11 +83,34 @@ class StatisticsPage extends StatelessWidget {
               ),
               body: Column(
                 children: [
-                  Text('Average Score: ${sumResult / data.length}'),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      // Note: Styles for TextSpans must be explicitly defined.
+                      // Child text spans will inherit styles from parent
+                      style: const TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Average Score: ',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(
+                          text: (sumResult / data.length).toString(),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     height: 50,
                   ),
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: listW,
                   ),
                 ],
@@ -89,7 +125,15 @@ class StatisticsPage extends StatelessWidget {
                     children: [
                       IconButton(
                           onPressed: () {
-                            // ícone da lupa
+                            Navigator.pushReplacement(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation1,
+                                          animation2) =>
+                                      NotificationsPage(), // Pass user object here
+                                  transitionDuration: Duration.zero,
+                                  reverseTransitionDuration: Duration.zero,
+                                ));
                           },
                           icon: Icon(Icons.notifications_outlined)),
                       IconButton(
@@ -97,9 +141,10 @@ class StatisticsPage extends StatelessWidget {
                             Navigator.pushReplacement(
                                 context,
                                 PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation1, animation2) =>
-                                          HomePage(user: null), // Pass user object here
+                                  pageBuilder: (context, animation1,
+                                          animation2) =>
+                                      HomePage(
+                                          user: null), // Pass user object here
                                   transitionDuration: Duration.zero,
                                   reverseTransitionDuration: Duration.zero,
                                 ));
