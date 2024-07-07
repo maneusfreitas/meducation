@@ -146,12 +146,26 @@ class LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Meducation',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'M',
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.deepPurple,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'education',
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 40),

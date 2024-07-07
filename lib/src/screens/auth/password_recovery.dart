@@ -49,9 +49,7 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text("Password Recovery"),
-      ),
+      appBar: AppBar(backgroundColor: Colors.white),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(

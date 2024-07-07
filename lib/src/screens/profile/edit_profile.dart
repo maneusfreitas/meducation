@@ -13,6 +13,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
+  late String _originalName;
   String? _password;
   String? _confirmPassword;
   bool _passwordVisible = false;
@@ -25,6 +26,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     _name = widget.user?.displayName ?? '';
+    _originalName = _name; // Store the original name
     _loadUserData();
   }
 
@@ -37,6 +39,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (userDoc.exists) {
       setState(() {
         _name = userDoc['name'];
+        _originalName = _name; // Update the original name
         _photoUrl = userDoc['photoUrl'];
       });
     }
@@ -70,6 +73,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (!_formKey.currentState!.validate()) return;
 
     _formKey.currentState!.save();
+
+    if (_name.isEmpty) {
+      _name = _originalName; // Use the original name if the field is empty
+    }
 
     if (_password != _confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -156,15 +163,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       initialValue: _name,
                       onChanged: (value) => _name = value,
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: _name,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your name';
-                        }
+                        // Allow empty value, but do not change the state here
                         return null;
                       },
                     ),
