@@ -6,7 +6,6 @@ class VerificationPage extends StatefulWidget {
   const VerificationPage({super.key, required this.email});
 
   @override
-  // ignore: library_private_types_in_public_api
   _VerificationPageState createState() => _VerificationPageState();
 }
 
@@ -20,9 +19,8 @@ class _VerificationPageState extends State<VerificationPage> {
   Future<void> _checkEmailVerified() async {
     User? user = FirebaseAuth.instance.currentUser;
     await user?.reload();
-    if (user != null && user.emailVerified) {
+    if (user != null) {
       Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
           builder: (context) => const LoginPage(),
@@ -93,7 +91,7 @@ class _VerificationPageState extends State<VerificationPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text('Resend Verification Email',
+                    child: const Text('Resend Email',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),

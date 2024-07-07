@@ -99,7 +99,7 @@ class _ImagePageState extends State<ImagePage>
 
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Image name saved successfully')),
+          const SnackBar(content: Text('Niko saved successfully')),
         );
       }
     } catch (e) {
@@ -117,7 +117,7 @@ class _ImagePageState extends State<ImagePage>
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
-          'My Niko',
+          'Niko',
           style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1)),
         ),
         centerTitle: true,

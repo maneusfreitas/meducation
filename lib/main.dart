@@ -26,11 +26,10 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   bool _passwordVisible = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -47,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         'name': user.displayName,
         'email': user.email,
         'photoUrl': user.photoURL,
-        'currentImage': 'sad_niko_purple.png', // Add this line
+        'currentImage': 'sad_niko_purple.png',
       });
     }
   }
@@ -71,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
       User? user = userCredential.user;
 
       if (user != null) {
-        await _saveUserData(user); // Save user data to Firestore
+        await _saveUserData(user);
       }
 
       return user;
@@ -91,12 +90,10 @@ class _LoginPageState extends State<LoginPage> {
       User? user = userCredential.user;
 
       if (user != null && !user.emailVerified) {
-        await FirebaseAuth.instance.signOut();
         _showEmailNotVerifiedDialog(user);
       } else if (user != null && user.emailVerified) {
-        await _saveUserData(user); // Save user data to Firestore
+        await _saveUserData(user);
         Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(user: user),
@@ -104,7 +101,6 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Erro no login, verifique as credenciais."),
@@ -123,7 +119,6 @@ class _LoginPageState extends State<LoginPage> {
           TextButton(
             onPressed: () async {
               await user.sendEmailVerification();
-              // ignore: use_build_context_synchronously
               Navigator.of(context).pop();
             },
             child: const Text("Resend Verification Email"),
@@ -252,7 +247,6 @@ class _LoginPageState extends State<LoginPage> {
                       User? user = await _handleGoogleSignIn();
                       if (user != null) {
                         Navigator.push(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) => HomePage(user: user),

@@ -16,11 +16,54 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String? _password;
   String? _confirmPassword;
   bool _passwordVisible = false;
+  String? _photoUrl;
+  File? _image;
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     _name = widget.user?.displayName ?? '';
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      setState(() {
+        _name = userDoc['name'];
+        _photoUrl = userDoc['photoUrl'];
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
+  Future<String?> _uploadImage(File image) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('profile_images/$fileName');
+      UploadTask uploadTask = storageReference.putFile(image);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> _updateProfile() async {
@@ -42,20 +85,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
         await widget.user!.updatePassword(_password!);
       }
 
+      String? imageUrl = _photoUrl;
+      if (_image != null) {
+        imageUrl = await _uploadImage(_image!);
+      }
+
       await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.user!.uid)
-          .update({'name': _name});
+          .update({'name': _name, 'photoUrl': imageUrl});
 
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile updated successfully')),
       );
 
-      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error updating profile: $e')),
       );
@@ -85,12 +130,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage: _image != null
+                          ? FileImage(_image!)
+                          : _photoUrl != null
+                              ? NetworkImage(_photoUrl!) as ImageProvider
+                              : null,
+                      child: _photoUrl == null && _image == null
+                          ? const Icon(
+                              Icons.camera_alt,
+                              size: 40,
+                              color: Colors.grey,
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 20),
