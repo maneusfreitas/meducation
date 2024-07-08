@@ -69,7 +69,7 @@ class _QuizState extends State<QuizScreen> {
         ),
       ),
       child: const Text(
-        'Submit',
+        'Submeter',
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,

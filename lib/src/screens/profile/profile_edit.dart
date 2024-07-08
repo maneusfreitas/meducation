@@ -1,9 +1,8 @@
 import 'package:portefolio/src/imports/imports.dart';
 
 class EditProfilePage extends StatefulWidget {
-  final User? user;
 
-  const EditProfilePage({super.key, required this.user});
+  const EditProfilePage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -20,7 +19,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _name = widget.user?.displayName ?? '';
+    _name = FirebaseAuth.instance.currentUser?.displayName ?? '';
   }
 
   Future<void> _updateProfile() async {
@@ -39,12 +38,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       if (_password != null && _password!.isNotEmpty) {
-        await widget.user!.updatePassword(_password!);
+        await FirebaseAuth.instance.currentUser!.updatePassword(_password!);
       }
 
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.user!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({'name': _name});
 
       // ignore: use_build_context_synchronously
@@ -69,10 +68,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios,
+              color: Color.fromRGBO(140, 82, 255, 1)),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         backgroundColor: Colors.white,
-        title:
-            const Text('Edit Profile', style: TextStyle(color: Colors.black)),
-        centerTitle: true,
+        toolbarHeight: 70,
+        title: Text('Editar perfil',
+            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
+        centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
@@ -85,14 +90,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: commonWidth,

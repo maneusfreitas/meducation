@@ -1,5 +1,5 @@
 import 'package:portefolio/src/imports/imports.dart';
-import 'package:portefolio/src/screens/statistics.dart';
+import 'package:portefolio/src/screens/statistics/statistics_main.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -11,13 +11,16 @@ class NotificationsPage extends StatelessWidget {
       appBar: AppBar(
         leading: null,
         backgroundColor: Colors.white,
-        title: const Text('Notificações',
-            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
-        centerTitle: true,
-        toolbarHeight: 40,
+        title: const Padding(
+          padding: EdgeInsets.only(left: 15.0),
+          child: Text('Notificações',
+              style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
+        ),
+        centerTitle: false,
+        toolbarHeight: 70,
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 15.0),
+            padding: EdgeInsets.only(right: 25.0),
             child: Icon(Icons.apps, color: Color.fromRGBO(140, 82, 255, 1)),
           )
         ],
@@ -29,7 +32,7 @@ class NotificationsPage extends StatelessWidget {
               children: [
             Icon(
               Icons.warning,
-              color: Colors.orange,
+              color: Colors.grey,
             ),
             SizedBox(height: 10),
             Text('Em construção')

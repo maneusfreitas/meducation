@@ -1,9 +1,8 @@
 import 'package:portefolio/src/imports/imports.dart';
+import 'package:portefolio/src/screens/profile/profile_niko.dart';
 
 class ProfilePage extends StatefulWidget {
-  final User? user;
-
-  const ProfilePage({super.key, required this.user});
+  const ProfilePage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -21,21 +20,19 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchUserName() async {
-    if (widget.user != null) {
-      try {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(widget.user!.uid)
-            .get();
-        if (userDoc.exists) {
-          setState(() {
-            _userName = userDoc.get('name') ?? 'Guest';
-            _photoUrl = userDoc.get('photoUrl');
-          });
-        }
-        // ignore: empty_catches
-      } catch (e) {}
-    }
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      if (userDoc.exists) {
+        setState(() {
+          _userName = userDoc.get('name') ?? 'Guest';
+          _photoUrl = userDoc.get('photoUrl');
+        });
+      }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<void> _signOut() async {
@@ -76,9 +73,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.user!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .delete();
-      await widget.user!.delete();
+      await FirebaseAuth.instance.currentUser!.delete();
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
         // ignore: use_build_context_synchronously
@@ -95,9 +92,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _checkGoogleSignIn() async {
-    if (widget.user != null) {
+    if (FirebaseAuth.instance.currentUser!.uid != null) {
       try {
-        final providers = widget.user!.providerData;
+        final providers = FirebaseAuth.instance.currentUser!.providerData;
         bool isGoogleSignIn =
             providers.any((provider) => provider.providerId == 'google.com');
 
@@ -110,11 +107,13 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         } else {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditProfilePage(user: widget.user),
-            ),
-          );
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation1, animation2) =>
+                    EditProfilePage(), // Pass user object here
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
+              ));
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -130,23 +129,24 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
+          icon: Icon(Icons.arrow_back_ios,
+              color: Color.fromRGBO(140, 82, 255, 1)),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-        title: const Text('Perfil',
+        title: Text('Perfil',
             style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
-        centerTitle: true,
-        toolbarHeight: 40,
+        centerTitle: false,
+        toolbarHeight: 70,
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 15.0),
+            padding: EdgeInsets.only(right: 25.0),
             child: Icon(Icons.apps, color: Color.fromRGBO(140, 82, 255, 1)),
           )
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 50.0),
+        padding: const EdgeInsets.only(top: 20),
         child: Align(
           alignment: Alignment.center,
           child: Column(
@@ -154,14 +154,19 @@ class _ProfilePageState extends State<ProfilePage> {
               if (_photoUrl != null)
                 CircleAvatar(
                   radius: 50,
+                  backgroundColor: Colors.black,
                   backgroundImage: NetworkImage(_photoUrl!),
                 )
               else
                 const CircleAvatar(
                   radius: 50,
-                  backgroundImage:
-                      AssetImage('assets/images/profile_example.png'),
+                  backgroundColor: Colors.black,
+                  backgroundImage: NetworkImage(
+                      'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png'),
                 ),
+              SizedBox(
+                height: 15,
+              ),
               Text(
                 _userName,
                 style: const TextStyle(
@@ -171,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Text(
-                widget.user?.email ?? 'Guest',
+                FirebaseAuth.instance.currentUser?.email ?? 'Guest',
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.normal,
@@ -192,9 +197,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.analytics),
+                    Icon(Icons.analytics,
+                        color: Color.fromRGBO(140, 82, 255, 1)),
                     Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
-                    Text('Estatísticas')
+                    Text(
+                      'Estatísticas',
+                      style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1)),
+                    )
                   ],
                 ),
               ),
@@ -210,16 +219,26 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ImagePage()),
-                  );
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            ImagePage(), // Pass user object here
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ));
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.circle),
+                    Icon(
+                      Icons.circle,
+                      color: Color.fromRGBO(140, 82, 255, 1),
+                    ),
                     Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
-                    Text('myNiko')
+                    Text(
+                      'myNiko',
+                      style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1)),
+                    )
                   ],
                 ),
               ),
@@ -273,22 +292,20 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 25),
               TextButton(
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.red,
-                  fixedSize: const Size(275, 50),
-                  side: const BorderSide(
-                      color: Color.fromARGB(255, 218, 218, 218)),
-                ),
                 onPressed: _signOut,
+                style: ButtonStyle(overlayColor: WidgetStateColor.transparent),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.logout),
-                    Padding(padding: EdgeInsets.only(left: 2.5, right: 2.5)),
-                    Text('Logout')
+                    Icon(
+                      Icons.logout,
+                      color: Colors.grey,
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 5, right: 5)),
+                    Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.grey),
+                    )
                   ],
                 ),
               ),

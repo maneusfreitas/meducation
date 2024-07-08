@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:portefolio/src/dataset/dataset.dart';
 import 'package:portefolio/src/models/quiz_model.dart';
 import 'package:portefolio/src/models/quiz_result_model.dart';
@@ -21,7 +22,6 @@ class _ResultState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     double countGood = 0;
     int countGlobalGood = 0;
     int countAnswer = 0;
@@ -64,9 +64,20 @@ class _ResultState extends State<ResultScreen> {
     }
 
     double perc = (countGood / countGlobalGood) * 100;
-    
+
+    final Map<String, double> someMap = {
+      "Certas": countGood.toDouble(),
+      "Erradas": (countGlobalGood - countGood).toDouble(),
+    };
+
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    FirebaseFirestore.instance.collection('quiz_result').add(QuizResult(userId: uid, quizId: quizDataset.first.id, userScore: countGood.toInt(), quizScore: countGlobalGood, timestamp: Timestamp.now()).toJson());
+    FirebaseFirestore.instance.collection('quiz_result').add(QuizResult(
+            userId: uid,
+            quizId: quizDataset.first.id,
+            userScore: countGood.toInt(),
+            quizScore: countGlobalGood,
+            timestamp: Timestamp.now())
+        .toJson());
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -114,9 +125,27 @@ class _ResultState extends State<ResultScreen> {
                 SizedBox(
                   height: 25,
                 ),
-                Text('O Niko agradece a tua ajuda! (aleatório)'),
                 Text('Nº de questões: $indexQ'),
                 Text('Nº de respostas: $countAnswer'),
+                /*PieChart(
+                  dataMap: someMap,
+                  chartType: ChartType.ring,
+                  baseChartColor: Colors.grey[50]!.withOpacity(0.15),
+                  legendOptions: LegendOptions(
+                    showLegendsInRow: false,
+                    legendPosition: LegendPosition.left,
+                    showLegends: false,
+                  ),
+                  chartRadius: MediaQuery.of(context).size.width / 3.2,
+                  colorList: [
+                    Color.fromRGBO(140, 82, 255, 1),
+                    Color.fromARGB(140, 216, 191, 255)
+                  ],
+                  chartValuesOptions: ChartValuesOptions(
+                    showChartValuesInPercentage: true,
+                  ),
+                  totalValue: (countGlobalGood).toDouble(),
+                ),*/
                 SizedBox(
                   height: 50,
                 ),

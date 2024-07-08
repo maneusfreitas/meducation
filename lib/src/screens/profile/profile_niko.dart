@@ -113,16 +113,25 @@ class _ImagePageState extends State<ImagePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set background to white
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
-          'My Niko',
-          style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios,
+              color: Color.fromRGBO(140, 82, 255, 1)),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        centerTitle: true,
-        toolbarHeight: 40,
+        backgroundColor: Colors.white,
+        title: Text('myNiko',
+            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
+        centerTitle: false,
+        toolbarHeight: 70,
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 25.0),
+            child: Icon(Icons.apps, color: Color.fromRGBO(140, 82, 255, 1)),
+          )
+        ],
       ),
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -141,14 +150,14 @@ class _ImagePageState extends State<ImagePage>
             FloatingActionButton(
               heroTag: 'toggleStyle', // Unique tag
               onPressed: _toggleStyle,
-              backgroundColor: Colors.deepPurple,
+              backgroundColor: Color.fromRGBO(140, 82, 255, 1),
               child: const Icon(Icons.style),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _saveImageName,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Color.fromRGBO(140, 82, 255, 1),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 shape: RoundedRectangleBorder(
