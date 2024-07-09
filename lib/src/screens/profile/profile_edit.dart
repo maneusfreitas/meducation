@@ -1,8 +1,9 @@
 import 'package:portefolio/src/imports/imports.dart';
 
 class EditProfilePage extends StatefulWidget {
+  final User? user;
 
-  const EditProfilePage({super.key});
+  const EditProfilePage({super.key, required this.user});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -12,20 +13,70 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
+  late String _originalName;
   String? _password;
   String? _confirmPassword;
   bool _passwordVisible = false;
+  String? _photoUrl;
+  File? _image;
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    _name = FirebaseAuth.instance.currentUser?.displayName ?? '';
+    _name = widget.user?.displayName ?? '';
+    _originalName = _name; // Store the original name
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      setState(() {
+        _name = userDoc['name'];
+        _originalName = _name; // Update the original name
+        _photoUrl = userDoc['photoUrl'];
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
+  Future<String?> _uploadImage(File image) async {
+    try {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('profile_images/$fileName');
+      UploadTask uploadTask = storageReference.putFile(image);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> _updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
     _formKey.currentState!.save();
+
+    if (_name.isEmpty) {
+      _name = _originalName; // Use the original name if the field is empty
+    }
 
     if (_password != _confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -38,23 +89,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       if (_password != null && _password!.isNotEmpty) {
-        await FirebaseAuth.instance.currentUser!.updatePassword(_password!);
+        await widget.user!.updatePassword(_password!);
+      }
+
+      String? imageUrl = _photoUrl;
+      if (_image != null) {
+        imageUrl = await _uploadImage(_image!);
       }
 
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({'name': _name});
+          .doc(widget.user!.uid)
+          .update({'name': _name, 'photoUrl': imageUrl});
 
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile updated successfully')),
       );
 
-      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error updating profile: $e')),
       );
@@ -68,16 +121,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: Color.fromRGBO(140, 82, 255, 1)),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         backgroundColor: Colors.white,
-        toolbarHeight: 70,
-        title: Text('Editar perfil',
-            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
-        centerTitle: false,
+        title:
+            const Text('Edit Profile', style: TextStyle(color: Colors.black)),
+        centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
@@ -91,21 +138,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage: _image != null
+                          ? FileImage(_image!)
+                          : _photoUrl != null
+                              ? NetworkImage(_photoUrl!) as ImageProvider
+                              : null,
+                      child: _photoUrl == null && _image == null
+                          ? const Icon(
+                              Icons.camera_alt,
+                              size: 40,
+                              color: Colors.grey,
+                            )
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: commonWidth,
                     child: TextFormField(
                       initialValue: _name,
                       onChanged: (value) => _name = value,
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: _name,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your name';
-                        }
+                        // Allow empty value, but do not change the state here
                         return null;
                       },
                     ),

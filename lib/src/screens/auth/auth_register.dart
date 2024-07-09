@@ -4,11 +4,10 @@ class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _RegisterPageState createState() => _RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
   final TextEditingController _nameController = TextEditingController();
@@ -44,7 +43,48 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  bool _isValidEmail(String email) {
+    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+    return regex.hasMatch(email);
+  }
+
+  bool _validateInputs() {
+    if (_nameController.text.isEmpty) {
+      _showError('Name is required.');
+      return false;
+    }
+    if (_emailController.text.isEmpty) {
+      _showError('Email is required.');
+      return false;
+    }
+    if (!_isValidEmail(_emailController.text)) {
+      _showError('Please enter a valid email.');
+      return false;
+    }
+    if (_passwordController.text.isEmpty) {
+      _showError('Password is required.');
+      return false;
+    }
+    if (_confirmPasswordController.text.isEmpty) {
+      _showError('Confirm password is required.');
+      return false;
+    }
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showError('Passwords do not match.');
+      return false;
+    }
+    return true;
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   Future<void> _register() async {
+    if (!_validateInputs()) return;
+
     const String defaultProfileImageUrl =
         'https://firebasestorage.googleapis.com/v0/b/meducation-fa4f9.appspot.com/o/profile_images%2Fdefault.jpeg?alt=media&token=eaecf0c1-d1e4-47c5-b564-da2a2b2dc18e';
 
@@ -74,17 +114,19 @@ class _RegisterPageState extends State<RegisterPage> {
         'photoUrl': imageUrl,
       });
 
-      Navigator.push(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerificationPage(
-            email: _emailController.text,
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerificationPage(
+              email: _emailController.text,
+            ),
           ),
-        ),
-      );
-      // ignore: empty_catches
-    } catch (e) {}
+        );
+      }
+    } catch (e) {
+      _showError('Registration failed. Please try again.');
+    }
   }
 
   @override
@@ -95,7 +137,6 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -105,12 +146,26 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Meducation',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'M',
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.deepPurple,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'education',
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
