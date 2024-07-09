@@ -86,7 +86,7 @@ class RegisterPageState extends State<RegisterPage> {
     if (!_validateInputs()) return;
 
     const String defaultProfileImageUrl =
-        'https://firebasestorage.googleapis.com/v0/b/meducation-fa4f9.appspot.com/o/profile_images%2Fdefault.jpeg?alt=media&token=eaecf0c1-d1e4-47c5-b564-da2a2b2dc18e';
+        'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png';
 
     try {
       UserCredential userCredential =
