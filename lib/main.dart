@@ -215,9 +215,12 @@ class LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const PasswordRecoveryPage()),
-                      );
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              PasswordRecoveryPage(), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
                     },
                     child: RichText(
                       text: const TextSpan(
@@ -261,11 +264,13 @@ class LoginPageState extends State<LoginPage> {
                       User? user = await _handleGoogleSignIn();
                       if (user != null) {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(user: user),
-                          ),
-                        );
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              HomePage(user: user,), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
                       }
                     },
                     icon: Image.asset(
@@ -300,15 +305,18 @@ class LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 30),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisterPage()),
-                    );
+                    Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              RegisterPage(), // Pass user object here  
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
                   },
                   child: RichText(
                     text: const TextSpan(
-                      text: "Don't have an account? ",
+                      text: "Already have an account? ",
                       style: TextStyle(color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(

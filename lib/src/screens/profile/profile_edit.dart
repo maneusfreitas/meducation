@@ -3,7 +3,7 @@ import 'package:portefolio/src/imports/imports.dart';
 class EditProfilePage extends StatefulWidget {
   final User? user;
 
-  const EditProfilePage({super.key, required this.user});
+  const EditProfilePage({super.key, this.user});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -33,7 +33,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _loadUserData() async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(widget.user!.uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     if (userDoc.exists) {
@@ -89,7 +89,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     try {
       if (_password != null && _password!.isNotEmpty) {
-        await widget.user!.updatePassword(_password!);
+        await FirebaseAuth.instance.currentUser!.updatePassword(_password!);
       }
 
       String? imageUrl = _photoUrl;
@@ -99,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.user!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({'name': _name, 'photoUrl': imageUrl});
 
       ScaffoldMessenger.of(context).showSnackBar(

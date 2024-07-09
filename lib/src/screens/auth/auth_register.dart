@@ -115,7 +115,7 @@ class RegisterPageState extends State<RegisterPage> {
       });
 
       if (mounted) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => VerificationPage(
@@ -278,6 +278,33 @@ class RegisterPageState extends State<RegisterPage> {
                     ),
                     child: const Text('Register',
                         style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              LoginPage(), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
+                  },
+                  child: RichText(
+                    text: const TextSpan(
+                      text: "Já tens uma conta? ",
+                      style: TextStyle(color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Entra aqui!',
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

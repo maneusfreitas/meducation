@@ -13,7 +13,6 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   void initState() {
     super.initState();
-    _checkEmailVerified();
   }
 
   Future<void> _checkEmailVerified() async {

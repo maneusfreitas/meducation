@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation1, animation2) =>
-                    EditProfilePage(), // Pass user object here
+                    EditProfilePage(user: null,), // Pass user object here
                 transitionDuration: Duration.zero,
                 reverseTransitionDuration: Duration.zero,
               ));
@@ -218,14 +218,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) =>
-                            ImagePage(), // Pass user object here
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ));
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,

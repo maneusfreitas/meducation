@@ -49,7 +49,18 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios,
+              color: Color.fromRGBO(140, 82, 255, 1)),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.white,
+        title: Text('Recuperar acesso',
+            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
+        centerTitle: false,
+        toolbarHeight: 70,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -58,20 +69,13 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Recover Password',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 const SizedBox(height: 40),
                 SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'E-mail',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -91,7 +95,7 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    child: const Text('Recover',
+                    child: const Text('Enviar recuperação',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),

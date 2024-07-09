@@ -1,5 +1,8 @@
-import 'package:portefolio/src/imports/imports.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:portefolio/src/screens/notifications/notifications_main.dart';
+import 'package:portefolio/src/screens/profile/profile_main.dart';
 import 'package:portefolio/src/screens/quiz/quiz_load.dart';
 import 'package:portefolio/src/screens/statistics/statistics_main.dart';
 
