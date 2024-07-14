@@ -11,6 +11,52 @@ class PasswordRecoveryPage extends StatefulWidget {
 class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
   final TextEditingController _emailController = TextEditingController();
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+
+  Future<void> _saveUserData(User user) async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'name': user.displayName,
+        'email': user.email,
+        'photoUrl': user.photoURL,
+        'currentImage': 'sad_niko_purple.png',
+      });
+    }
+  }
+
+  Future<User?> _handleGoogleSignIn() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return null;
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await _saveUserData(user);
+      }
+
+      return user;
+    } catch (error) {
+      return null;
+    }
+  }
+
   Future<void> _resetPassword() async {
     String email = _emailController.text.trim();
 
@@ -50,15 +96,31 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              color: Color.fromRGBO(140, 82, 255, 1)),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         backgroundColor: Colors.white,
-        title: Text('Recuperar acesso',
-            style: TextStyle(color: Color.fromRGBO(140, 82, 255, 1))),
-        centerTitle: false,
+        forceMaterialTransparency: true,
+        title: RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                text: 'M',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              TextSpan(
+                text: 'education',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+        centerTitle: true,
         toolbarHeight: 70,
       ),
       body: Padding(
@@ -69,13 +131,17 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text(
+                  'Insere o teu e-mail para repor a palavra-passe',
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 40),
                 SizedBox(
                   width: commonWidth,
                   child: TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      labelText: 'E-mail',
+                      labelText: 'Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -97,6 +163,81 @@ class _PasswordRecoveryPageState extends State<PasswordRecoveryPage> {
                     ),
                     child: const Text('Enviar recuperação',
                         style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: commonWidth,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      User? user = await _handleGoogleSignIn();
+                      if (user != null) {
+                        Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  HomePage(
+                              ), // Pass user object here
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ));
+                      }
+                    },
+                    icon: Image.asset(
+                      'assets/images/gmail_icon.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    label: RichText(
+                      text: const TextSpan(
+                        text: 'Continuar com ',
+                        style: TextStyle(color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Google',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        side: const BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              LoginPage(), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
+                  },
+                  child: RichText(
+                    text: const TextSpan(
+                      text: "Já tens uma conta? ",
+                      style: TextStyle(color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Entra aqui',
+                          style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

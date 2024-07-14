@@ -1,5 +1,6 @@
 import 'package:portefolio/src/imports/imports.dart';
 import 'package:portefolio/src/screens/profile/profile_niko.dart';
+import 'package:portefolio/src/screens/statistics/statistics_main.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -110,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation1, animation2) =>
-                    EditProfilePage(user: null,), // Pass user object here
+                    EditProfilePage(), // Pass user object here
                 transitionDuration: Duration.zero,
                 reverseTransitionDuration: Duration.zero,
               ));
@@ -154,13 +155,13 @@ class _ProfilePageState extends State<ProfilePage> {
               if (_photoUrl != null)
                 CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.white,
                   backgroundImage: NetworkImage(_photoUrl!),
                 )
               else
                 const CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.white,
                   backgroundImage: NetworkImage(
                       'https://www.hotelbooqi.com/wp-content/uploads/2021/12/128-1280406_view-user-icon-png-user-circle-icon-png.png'),
                 ),
@@ -193,7 +194,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   side: const BorderSide(
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            StatisticsPage(), // Pass user object here
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ));
+                },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -218,6 +229,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Color.fromARGB(255, 218, 218, 218)),
                 ),
                 onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            ImagePage(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ));
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,

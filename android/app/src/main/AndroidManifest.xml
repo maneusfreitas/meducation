@@ -4,7 +4,7 @@
 
 
     <application
-        android:label="portefolio"
+        android:label="Meducation"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
