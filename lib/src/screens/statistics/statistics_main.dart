@@ -1,6 +1,6 @@
+import 'package:pie_chart/pie_chart.dart';
 import 'package:portefolio/src/imports/imports.dart';
 import 'package:portefolio/src/screens/notifications/notifications_main.dart';
-import 'package:pie_chart/pie_chart.dart';
 
 class StatisticsPage extends StatelessWidget {
   const StatisticsPage({super.key});
@@ -267,8 +267,7 @@ class StatisticsPage extends StatelessWidget {
                               PageRouteBuilder(
                                 pageBuilder: (context, animation1,
                                         animation2) =>
-                                    const HomePage(
-                                        user: null), // Pass user object here
+                                    const HomePage(), // Pass user object here
                                 transitionDuration: Duration.zero,
                                 reverseTransitionDuration: Duration.zero,
                               ));
@@ -285,7 +284,15 @@ class StatisticsPage extends StatelessWidget {
                           )),
                       IconButton(
                           onPressed: () {
-                            // ícone do usuário
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation1,
+                                        animation2) =>
+                                    const ProfilePage(), // Pass user object here
+                                transitionDuration: Duration.zero,
+                                reverseTransitionDuration: Duration.zero,
+                              ));
                           },
                           icon: const Icon(Icons.person_outlined)),
                     ],

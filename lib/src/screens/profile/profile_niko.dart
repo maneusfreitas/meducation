@@ -140,34 +140,50 @@ class _ImagePageState extends State<ImagePage>
                 ? FadeTransition(
                     opacity: _fadeAnimation,
                     child: SizedBox(
-                      width: 400, // Increased width
-                      height: 400, // Increased height
+                      width: 350, // Increased width
+                      height: 350, // Increased height
                       child: Image.network(_imageUrls[_currentStyle]!),
                     ),
                   )
                 : const CircularProgressIndicator(),
-            const SizedBox(height: 20),
-            FloatingActionButton(
-              heroTag: 'toggleStyle', // Unique tag
-              onPressed: _toggleStyle,
-              backgroundColor: Color.fromRGBO(140, 82, 255, 1),
-              child: const Icon(Icons.style),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveImageName,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromRGBO(140, 82, 255, 1),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            const SizedBox(height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _toggleStyle,
+                  child: const Icon(
+                    Icons.color_lens,
+                    color: Colors.white,
+                    size: 22.5,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                 ),
-              ),
-              child: const Text(
-                'Save Changes',
-                style: TextStyle(color: Colors.white),
-              ),
+                const SizedBox(width: 5),
+                ElevatedButton(
+                  onPressed: _saveImageName,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromRGBO(140, 82, 255, 1),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Guardar alterações',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

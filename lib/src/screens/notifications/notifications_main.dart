@@ -59,7 +59,7 @@ class NotificationsPage extends StatelessWidget {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) =>
-                              HomePage(user: null), // Pass user object here
+                              HomePage(), // Pass user object here
                           transitionDuration: Duration.zero,
                           reverseTransitionDuration: Duration.zero,
                         ));
@@ -81,7 +81,14 @@ class NotificationsPage extends StatelessWidget {
                   )),
               IconButton(
                   onPressed: () {
-                    // ícone do usuário
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) =>
+                              const ProfilePage(), // Pass user object here
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ));
                   },
                   icon: Icon(Icons.person_outlined)),
             ],

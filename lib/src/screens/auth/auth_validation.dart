@@ -20,11 +20,13 @@ class _VerificationPageState extends State<VerificationPage> {
     await user?.reload();
     if (user != null) {
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                LoginPage(), // Pass user object here
+            transitionDuration: Duration.zero,
+            reverseTransitionDuration: Duration.zero,
+          ));
     }
   }
 
@@ -41,78 +43,105 @@ class _VerificationPageState extends State<VerificationPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Email Verification'),
+        title: RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                text: 'M',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              TextSpan(
+                text: 'education',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+        centerTitle: true,
+        toolbarHeight: 70,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Meducation',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'We have sent a verification link to the email',
-                  style: TextStyle(color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  widget.email,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Please check your email and click on the verification link to verify your email address.',
-                  style: TextStyle(color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: commonWidth,
-                  child: ElevatedButton(
-                    onPressed: _resendVerificationEmail,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.mail,
+                color: Colors.deepPurpleAccent,
+                size: 75,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Obrigado!',
+                style: TextStyle(color: Colors.black, fontSize: 25),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Enviámos um link de confirmação para ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal, color: Colors.black),
+                    ),
+                    TextSpan(
+                      text: widget.email,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    child: const Text('Resend Email',
-                        style: TextStyle(color: Colors.white)),
-                  ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: commonWidth,
-                  child: ElevatedButton(
-                    onPressed: _checkEmailVerified,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
+              ),
+              const SizedBox(height: 50),
+              SizedBox(
+                width: commonWidth,
+                child: ElevatedButton(
+                  onPressed: _checkEmailVerified,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    child: const Text('I Have Verified',
-                        style: TextStyle(color: Colors.white)),
                   ),
+                  child: const Text('Seguinte',
+                      style: TextStyle(color: Colors.white)),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: commonWidth,
+                child: ElevatedButton(
+                  onPressed: _resendVerificationEmail,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    side: const BorderSide(
+                        color: Color.fromARGB(255, 218, 218, 218)),
+                  ),
+                  child: const Text('Reenviar e-mail',
+                      style: TextStyle(color: Colors.deepPurpleAccent)),
+                ),
+              ),
+            ],
           ),
         ),
       ),

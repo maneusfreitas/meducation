@@ -94,11 +94,13 @@ class LoginPageState extends State<LoginPage> {
       } else if (user != null && user.emailVerified) {
         await _saveUserData(user);
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(user: user),
-          ),
-        );
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => HomePage(
+              ), // Pass user object here
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -138,6 +140,33 @@ class LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                text: 'M',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.deepPurple,
+                ),
+              ),
+              TextSpan(
+                text: 'education',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+        centerTitle: true,
+        toolbarHeight: 70,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -146,29 +175,6 @@ class LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                RichText(
-                  text: const TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'M',
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'education',
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 40),
                 SizedBox(
                   width: commonWidth,
                   child: TextField(
@@ -213,24 +219,27 @@ class LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                              PasswordRecoveryPage(), // Pass user object here
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ));
+                      Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation1, animation2) =>
+                                PasswordRecoveryPage(),
+                            transitionDuration: Duration.zero,
+                            reverseTransitionDuration: Duration.zero,
+                          ));
                     },
                     child: RichText(
                       text: const TextSpan(
-                        text: 'Forgot your password? ',
-                        style: TextStyle(color: Colors.black, fontSize: 12.5),
+                        text: 'Esqueci-me da minha ',
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontSize: 12.5,
+                        ),
                         children: <TextSpan>[
                           TextSpan(
-                            text: 'Recover here',
+                            text: 'palavra-passe',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
                               fontSize: 12.5,
                             ),
                           ),
@@ -263,14 +272,14 @@ class LoginPageState extends State<LoginPage> {
                     onPressed: () async {
                       User? user = await _handleGoogleSignIn();
                       if (user != null) {
-                        Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) =>
-                              HomePage(user: user,), // Pass user object here
-                          transitionDuration: Duration.zero,
-                          reverseTransitionDuration: Duration.zero,
-                        ));
+                        Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation1, animation2) =>
+                                  HomePage(),
+                              transitionDuration: Duration.zero,
+                              reverseTransitionDuration: Duration.zero,
+                            ));
                       }
                     },
                     icon: Image.asset(
@@ -280,7 +289,7 @@ class LoginPageState extends State<LoginPage> {
                     ),
                     label: RichText(
                       text: const TextSpan(
-                        text: 'Continue with ',
+                        text: 'Continuar com ',
                         style: TextStyle(color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
@@ -309,18 +318,18 @@ class LoginPageState extends State<LoginPage> {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) =>
-                              RegisterPage(), // Pass user object here  
+                              RegisterPage(),
                           transitionDuration: Duration.zero,
                           reverseTransitionDuration: Duration.zero,
                         ));
                   },
                   child: RichText(
                     text: const TextSpan(
-                      text: "Already have an account? ",
+                      text: "Não tens registo? ",
                       style: TextStyle(color: Colors.black),
                       children: <TextSpan>[
                         TextSpan(
-                          text: 'Register here',
+                          text: 'Cria uma conta',
                           style: TextStyle(
                             color: Colors.deepPurple,
                             fontWeight: FontWeight.bold,

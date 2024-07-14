@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pie_chart/pie_chart.dart';
 import 'package:portefolio/src/dataset/dataset.dart';
 import 'package:portefolio/src/models/quiz_model.dart';
 import 'package:portefolio/src/models/quiz_result_model.dart';
@@ -127,25 +126,6 @@ class _ResultState extends State<ResultScreen> {
                 ),
                 Text('Nº de questões: $indexQ'),
                 Text('Nº de respostas: $countAnswer'),
-                /*PieChart(
-                  dataMap: someMap,
-                  chartType: ChartType.ring,
-                  baseChartColor: Colors.grey[50]!.withOpacity(0.15),
-                  legendOptions: LegendOptions(
-                    showLegendsInRow: false,
-                    legendPosition: LegendPosition.left,
-                    showLegends: false,
-                  ),
-                  chartRadius: MediaQuery.of(context).size.width / 3.2,
-                  colorList: [
-                    Color.fromRGBO(140, 82, 255, 1),
-                    Color.fromARGB(140, 216, 191, 255)
-                  ],
-                  chartValuesOptions: ChartValuesOptions(
-                    showChartValuesInPercentage: true,
-                  ),
-                  totalValue: (countGlobalGood).toDouble(),
-                ),*/
                 SizedBox(
                   height: 50,
                 ),
@@ -157,9 +137,7 @@ class _ResultState extends State<ResultScreen> {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) =>
-                              const HomePage(
-                            user: null,
-                          ), // Pass user object here
+                              const HomePage( ), // Pass user object here
                           transitionDuration: Duration.zero,
                           reverseTransitionDuration: Duration.zero,
                         ));
